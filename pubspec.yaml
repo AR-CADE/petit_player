@@ -1,7 +1,7 @@
 name: petit_player
 description: A tiny wrapper around for video_player.
 version: 1.0.1
-homepage:
+homepage: https://github.com/AR-CADE/petit_player
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
