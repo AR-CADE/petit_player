@@ -34,23 +34,23 @@ class PetitPlayerState extends State<PetitPlayer> {
   Future<VideoPlayerController>? initializeVideoPlayerFuture;
 
   @override
-  Future<void> initState() async {
-    await loadUrl(widget.url);
+  void initState() {
+    loadUrl(widget.url);
     super.initState();
   }
 
   @override
-  Future<void> didUpdateWidget(covariant PetitPlayer oldWidget) async {
+  void didUpdateWidget(covariant PetitPlayer oldWidget) {
     if (oldWidget.url != widget.url) {
-      await loadUrl(widget.url);
+      loadUrl(widget.url);
     }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
-  Future<void> dispose() async {
-    await videoController?.pause();
-    await videoController?.dispose();
+  void dispose() {
+    videoController?.pause();
+    videoController?.dispose();
     videoController = null;
 
     super.dispose();
@@ -101,10 +101,6 @@ class PetitPlayerState extends State<PetitPlayer> {
       });
     });
 
-    await videoControlSetup(url);
-  }
-
-  Future<void> videoControlSetup(String url) async {
     await videoInit(url);
   }
 
