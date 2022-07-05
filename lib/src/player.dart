@@ -49,10 +49,8 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void dispose() {
-    videoController?.pause();
-    videoController?.dispose();
-    videoController = null;
-
+    videoController?.pause().then((value) =>
+        videoController?.dispose().then((value) => videoController = null));
     super.dispose();
   }
 
