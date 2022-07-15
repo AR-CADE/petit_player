@@ -62,7 +62,8 @@ class PetitPlayerState extends State<PetitPlayer> {
           final data = snapshot.data;
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData == true &&
-              data != null) {
+              data != null &&
+              data.value.isInitialized) {
             final onInitialized = widget.onInitialized;
 
             if (onInitialized != null) {
@@ -93,6 +94,7 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   Future<void> loadUrl(String url) async {
     await videoController?.pause();
+    initializeVideoPlayerFuture = null;
     videoController?.dispose().then((value) {
       setState(() {
         videoController = null;
