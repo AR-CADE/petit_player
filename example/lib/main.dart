@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:petit_player/petit_player.dart';
 
@@ -42,9 +43,17 @@ class MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 600,
               child: PetitPlayer(
-                url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                url: kIsWeb
+                    ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                    : 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                autoPlay: !kIsWeb,
               ),
             ),
+            if (kIsWeb) ...<Widget>[
+              Text(
+                  "Right-click the black rectangle and select Show Controls or Play to start the video",
+                  style: TextStyle(color: Colors.red))
+            ]
           ],
         ),
       ),
