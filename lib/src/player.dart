@@ -13,8 +13,11 @@ class PetitPlayer extends StatefulWidget {
   /// Video Loading Style
   final VideoLoadingStyle? videoLoadingStyle;
 
-  /// On Video Initialized
+  /// On Video controller Initialized
   final void Function(VideoPlayerController controller)? onInitialized;
+
+  /// On Video controller disposed
+  final void Function()? onDispose;
 
   /// Auto Play on init
   final bool autoPlay;
@@ -24,6 +27,7 @@ class PetitPlayer extends StatefulWidget {
     required this.url,
     this.videoLoadingStyle,
     this.onInitialized,
+    this.onDispose,
     this.autoPlay = true,
   }) : super(key: key);
 
@@ -53,6 +57,11 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void dispose() {
+    final onDispose = widget.onDispose;
+
+    if (onDispose != null) {
+      onDispose();
+    }
     initializeVideoPlayerFuture = null;
     videoController?.pause().then((value) =>
         videoController?.dispose().then((value) => videoController = null));
@@ -99,6 +108,11 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   Future<void> loadUrl(String url) async {
     await videoController?.pause();
+    final onDispose = widget.onDispose;
+
+    if (onDispose != null) {
+      onDispose();
+    }
     initializeVideoPlayerFuture = null;
     videoController?.dispose().then((value) {
       setState(() {
