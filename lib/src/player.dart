@@ -36,10 +36,8 @@ class PetitPlayer extends StatefulWidget {
 }
 
 class PetitPlayerState extends State<PetitPlayer> {
-  /// Video Player Controller
-  VideoPlayerController? videoController;
-
-  Future<VideoPlayerController>? initializeVideoPlayerFuture;
+  /// Future Video Player Controller
+  Future<VideoPlayerController>? futureVideoController;
 
   @override
   void initState() {
@@ -62,16 +60,16 @@ class PetitPlayerState extends State<PetitPlayer> {
     if (onDispose != null) {
       onDispose();
     }
-    initializeVideoPlayerFuture = null;
-    videoController?.pause().then((value) =>
-        videoController?.dispose().then((value) => videoController = null));
+    futureVideoController?.then((videoController) =>
+        videoController.pause().then((value) => videoController.dispose()));
+    futureVideoController = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<VideoPlayerController>(
-        future: initializeVideoPlayerFuture,
+        future: futureVideoController,
         builder: (context, snapshot) {
           final data = snapshot.data;
           if (snapshot.connectionState == ConnectionState.done &&
@@ -107,18 +105,17 @@ class PetitPlayerState extends State<PetitPlayer> {
   }
 
   Future<void> loadUrl(String url) async {
+    var videoController = await futureVideoController;
     await videoController?.pause();
     final onDispose = widget.onDispose;
 
     if (onDispose != null) {
       onDispose();
     }
-    initializeVideoPlayerFuture = null;
     videoController?.dispose().then((value) {
-      setState(() {
-        videoController = null;
-      });
+      setState(() {});
     });
+    futureVideoController = null;
 
     await videoInit(url);
   }
@@ -129,13 +126,11 @@ class PetitPlayerState extends State<PetitPlayer> {
 
     final controller = getController(url, offline);
 
-    initializeVideoPlayerFuture = controller.initialize().then((value) async {
-      setState(() {
-        videoController = controller;
-      });
+    futureVideoController = controller.initialize().then((value) async {
+      setState(() {});
 
       if (widget.autoPlay) {
-        await videoController?.play();
+        await controller.play();
       }
 
       return controller;
