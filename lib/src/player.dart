@@ -105,7 +105,7 @@ class PetitPlayerState extends State<PetitPlayer> {
   }
 
   Future<void> loadUrl(String url) async {
-    var videoController = await futureVideoController;
+    final videoController = await futureVideoController;
     await videoController?.pause();
     final onDispose = widget.onDispose;
 
