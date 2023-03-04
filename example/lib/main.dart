@@ -39,8 +39,8 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               height: 600,
               child: PetitPlayer(
                 url: kIsWeb
@@ -49,11 +49,19 @@ class MyHomePageState extends State<MyHomePage> {
                 autoPlay: !kIsWeb,
               ),
             ),
-            if (kIsWeb) ...<Widget>[
-              Text(
-                  "Right-click the black rectangle and select Show Controls or Play to start the video",
-                  style: TextStyle(color: Colors.red))
-            ]
+            if (kIsWeb)
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(children: const [
+                    ...<Widget>[
+                      Text(
+                          "Right-click the black rectangle to show the contex menu,",
+                          style: TextStyle(color: Colors.red, fontSize: 32)),
+                      Text(
+                          "and select 'Show Controls' or 'Play' to start the video",
+                          style: TextStyle(color: Colors.red, fontSize: 32))
+                    ]
+                  ])),
           ],
         ),
       ),
