@@ -22,6 +22,9 @@ class PetitPlayer extends StatefulWidget {
   /// Auto Play on init
   final bool autoPlay;
 
+  /// HttpHeaders for network VideoPlayerController
+  final Map<String, String> httpHeaders;
+
   const PetitPlayer({
     Key? key,
     required this.url,
@@ -29,6 +32,7 @@ class PetitPlayer extends StatefulWidget {
     this.onInitialized,
     this.onDispose,
     this.autoPlay = true,
+    this.httpHeaders = const <String, String>{},
   }) : super(key: key);
 
   @override
@@ -124,7 +128,8 @@ class PetitPlayerState extends State<PetitPlayer> {
     final urlIsNetwork = await compute(isNetwork, url);
     final bool offline = !urlIsNetwork;
 
-    final controller = getController(url, offline);
+    final controller =
+        getController(url, offline, httpHeaders: widget.httpHeaders);
 
     futureVideoController = controller.initialize().then((value) async {
       setState(() {});
