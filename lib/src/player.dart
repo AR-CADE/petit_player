@@ -40,8 +40,8 @@ class PetitPlayer extends StatefulWidget {
 }
 
 class PetitPlayerState extends State<PetitPlayer> {
-  /// Future Video Player Controller
-  Future<VideoPlayerController>? futureVideoController;
+  /// Future Initialized Video Player Controller
+  Future<VideoPlayerController>? futureInitializedVideoController;
 
   @override
   void initState() {
@@ -64,16 +64,16 @@ class PetitPlayerState extends State<PetitPlayer> {
     if (onDispose != null) {
       onDispose();
     }
-    futureVideoController?.then((videoController) =>
+    futureInitializedVideoController?.then((videoController) =>
         videoController.pause().then((value) => videoController.dispose()));
-    futureVideoController = null;
+    futureInitializedVideoController = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<VideoPlayerController>(
-        future: futureVideoController,
+        future: futureInitializedVideoController,
         builder: (context, snapshot) {
           final data = snapshot.data;
           if (snapshot.connectionState == ConnectionState.done &&
@@ -109,7 +109,7 @@ class PetitPlayerState extends State<PetitPlayer> {
   }
 
   Future<void> loadUrl(String url) async {
-    final videoController = await futureVideoController;
+    final videoController = await futureInitializedVideoController;
     await videoController?.pause();
     final onDispose = widget.onDispose;
 
@@ -119,7 +119,7 @@ class PetitPlayerState extends State<PetitPlayer> {
     videoController?.dispose().then((value) {
       setState(() {});
     });
-    futureVideoController = null;
+    futureInitializedVideoController = null;
 
     await videoInit(url);
   }
@@ -131,7 +131,8 @@ class PetitPlayerState extends State<PetitPlayer> {
     final controller =
         getController(url, offline, httpHeaders: widget.httpHeaders);
 
-    futureVideoController = controller.initialize().then((value) async {
+    futureInitializedVideoController =
+        controller.initialize().then((value) async {
       setState(() {});
 
       if (widget.autoPlay) {
