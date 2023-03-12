@@ -13,11 +13,8 @@ class PetitPlayer extends StatefulWidget {
   /// Video Loading Style
   final VideoLoadingStyle? videoLoadingStyle;
 
-  /// On Video controller Initialized
-  final void Function(VideoPlayerController controller)? onInitialized;
-
-  /// On Video controller disposed
-  final void Function()? onDispose;
+  /// A Stream Controller of VideoPlayerController
+  final StreamController<VideoPlayerController?>? streamController;
 
   /// Auto Play on init
   final bool autoPlay;
@@ -29,8 +26,7 @@ class PetitPlayer extends StatefulWidget {
     Key? key,
     required this.url,
     this.videoLoadingStyle,
-    this.onInitialized,
-    this.onDispose,
+    this.streamController,
     this.autoPlay = true,
     this.httpHeaders = const <String, String>{},
   }) : super(key: key);
@@ -62,14 +58,13 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void dispose() {
-    final onDispose = widget.onDispose;
-
-    if (onDispose != null) {
-      onDispose();
-    }
     futureInitializedVideoController = null;
     controller?.pause();
     controller?.dispose();
+    final streamController = widget.streamController;
+    if (streamController != null && streamController.isClosed == false) {
+      streamController.add(null);
+    }
     super.dispose();
   }
 
@@ -83,10 +78,11 @@ class PetitPlayerState extends State<PetitPlayer> {
               snapshot.hasData == true &&
               data != null &&
               data.value.isInitialized) {
-            final onInitialized = widget.onInitialized;
+            final streamController = widget.streamController;
 
-            if (onInitialized != null) {
-              onInitialized(data);
+            if (streamController != null &&
+                streamController.isClosed == false) {
+              streamController.add(data);
             }
 
             return ClipRect(
@@ -115,10 +111,10 @@ class PetitPlayerState extends State<PetitPlayer> {
     futureInitializedVideoController = null;
     await controller?.pause();
     await controller?.dispose();
-    final onDispose = widget.onDispose;
 
-    if (onDispose != null) {
-      onDispose();
+    final streamController = widget.streamController;
+    if (streamController != null && streamController.isClosed == false) {
+      streamController.add(null);
     }
 
     await videoInit(url);
