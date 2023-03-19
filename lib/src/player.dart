@@ -58,13 +58,17 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void dispose() {
-    futureInitializedVideoController = null;
-    controller?.pause();
-    controller?.dispose();
-    final streamController = widget.streamController;
-    if (streamController != null && streamController.isClosed == false) {
-      streamController.add(null);
-    }
+    controller?.pause().then((value) => controller?.dispose().then((value) {
+          if (!mounted) {
+            return;
+          }
+          final streamController = widget.streamController;
+          if (streamController != null && streamController.isClosed == false) {
+            streamController.add(null);
+          }
+          futureInitializedVideoController = null;
+        }));
+
     super.dispose();
   }
 
