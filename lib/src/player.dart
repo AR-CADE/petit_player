@@ -22,12 +22,16 @@ class PetitPlayer extends StatefulWidget {
   /// HttpHeaders for network VideoPlayerController
   final Map<String, String> httpHeaders;
 
+  /// Aspect Ration
+  final double aspectRation;
+
   const PetitPlayer({
     Key? key,
     required this.url,
     this.videoLoadingStyle,
     this.streamController,
     this.autoPlay = true,
+    this.aspectRation = 16 / 9,
     this.httpHeaders = const <String, String>{},
   }) : super(key: key);
 
@@ -103,7 +107,7 @@ class PetitPlayerState extends State<PetitPlayer> {
           } else {
             return Center(
                 child: AspectRatio(
-                    aspectRatio: 16 / 9,
+                    aspectRatio: widget.aspectRation,
                     child: widget.videoLoadingStyle != null
                         ? widget.videoLoadingStyle?.loading
                         : const Loader()));
