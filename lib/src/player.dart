@@ -137,6 +137,9 @@ class PetitPlayerState extends State<PetitPlayer> {
 
     futureInitializedVideoController =
         controller?.initialize().asStream().map((_) {
+      if (!mounted) {
+        return null;
+      }
       if (widget.autoPlay) {
         controller?.play().then((value) => setState(() {}));
       } else {
