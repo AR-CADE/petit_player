@@ -48,8 +48,8 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void initState() {
-    loadUrl(widget.url);
     super.initState();
+    loadUrl(widget.url);
   }
 
   @override
