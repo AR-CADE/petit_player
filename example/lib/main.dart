@@ -39,8 +39,8 @@ class MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          children: [
-            const SizedBox(
+          children: const [
+            SizedBox(
               height: 600,
               child: PetitPlayer(
                 url: kIsWeb
@@ -51,8 +51,8 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             if (kIsWeb)
               Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(children: const [
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(children: [
                     ...<Widget>[
                       Text(
                           "Right-click the black rectangle to show the contex menu,",
