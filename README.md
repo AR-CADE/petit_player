@@ -39,7 +39,7 @@ import 'package:petit_player/petit_player.dart';
             SizedBox(
                 height: 600,
                 child: PetitPlayer(
-                url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                uri: Uri.parse('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'),
                 ),
             ),
             ],
