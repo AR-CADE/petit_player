@@ -33,24 +33,28 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final uri = Uri.parse(
+      !kIsWeb
+          ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+          : 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
         child: Column(
-          children: const [
+          children: [
             SizedBox(
               height: 600,
               child: PetitPlayer(
-                url: kIsWeb
-                    ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                    : 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                uri: uri,
                 autoPlay: !kIsWeb,
               ),
             ),
             if (kIsWeb)
-              Padding(
+              const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
                     ...<Widget>[
