@@ -9,20 +9,20 @@ double calculateAspectRatio(BuildContext context, Size screenSize) {
 }
 
 VideoPlayerController getController(
-  String url,
+  Uri uri,
   bool offline, {
   Map<String, String> httpHeaders = const <String, String>{},
   Future<ClosedCaptionFile>? closedCaptionFile,
   VideoPlayerOptions? videoPlayerOptions,
 }) {
   if (offline == false) {
-    return VideoPlayerController.network(url,
+    return VideoPlayerController.networkUrl(uri,
         httpHeaders: httpHeaders,
         closedCaptionFile: closedCaptionFile,
         videoPlayerOptions: videoPlayerOptions);
   }
 
-  return VideoPlayerController.file(File(url),
+  return VideoPlayerController.file(File.fromUri(uri),
       closedCaptionFile: closedCaptionFile,
       videoPlayerOptions: videoPlayerOptions);
 }
@@ -47,7 +47,7 @@ Future<void> rewind(VideoPlayerController controller) async {
   if (!controller.value.isPlaying) {}
 }
 
-bool isNetwork(String url) {
+bool isNetwork(Uri uri) {
   final netRegex = RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
-  return netRegex.hasMatch(url);
+  return netRegex.hasMatch(uri.toString());
 }

@@ -8,7 +8,7 @@ import 'package:petit_player/src/style/video_loading_style.dart';
 
 class PetitPlayer extends StatefulWidget {
   /// Video source
-  final String url;
+  final Uri uri;
 
   /// Video Loading Style
   final VideoLoadingStyle? videoLoadingStyle;
@@ -27,7 +27,7 @@ class PetitPlayer extends StatefulWidget {
 
   const PetitPlayer({
     Key? key,
-    required this.url,
+    required this.uri,
     this.videoLoadingStyle,
     this.streamController,
     this.autoPlay = true,
@@ -49,13 +49,13 @@ class PetitPlayerState extends State<PetitPlayer> {
   @override
   void initState() {
     super.initState();
-    loadUrl(widget.url);
+    loadUrl(widget.uri);
   }
 
   @override
   void didUpdateWidget(covariant PetitPlayer oldWidget) {
-    if (oldWidget.url != widget.url) {
-      loadUrl(widget.url);
+    if (oldWidget.uri != widget.uri) {
+      loadUrl(widget.uri);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -93,6 +93,10 @@ class PetitPlayerState extends State<PetitPlayer> {
               streamController.add(data);
             }
 
+            if (widget.autoPlay) {
+              data.play();
+            }
+
             return ClipRect(
               child: SizedBox(
                 width: double.infinity,
@@ -115,7 +119,7 @@ class PetitPlayerState extends State<PetitPlayer> {
         });
   }
 
-  Future<void> loadUrl(String url) async {
+  Future<void> loadUrl(Uri uri) async {
     futureInitializedVideoController = null;
     await controller?.pause();
     await controller?.dispose();
@@ -125,26 +129,24 @@ class PetitPlayerState extends State<PetitPlayer> {
       streamController.add(null);
     }
 
-    await videoInit(url);
-    setState(() {});
+    final timeout = widget.videoLoadingStyle != null
+        ? widget.videoLoadingStyle!.timeout
+        : const Duration();
+
+    Future.delayed(timeout, () async {
+      await videoInit(uri);
+      setState(() {});
+    });
   }
 
-  Future<void> videoInit(String url) async {
-    final urlIsNetwork = await compute(isNetwork, url);
+  Future<void> videoInit(Uri uri) async {
+    final urlIsNetwork = await compute(isNetwork, uri);
     final bool offline = !urlIsNetwork;
 
-    controller = getController(url, offline, httpHeaders: widget.httpHeaders);
+    controller = getController(uri, offline, httpHeaders: widget.httpHeaders);
 
     futureInitializedVideoController =
         controller?.initialize().asStream().map((_) {
-      if (!mounted) {
-        return null;
-      }
-      if (widget.autoPlay) {
-        controller?.play().then((value) => setState(() {}));
-      } else {
-        setState(() {});
-      }
       return controller;
     }).first;
   }
