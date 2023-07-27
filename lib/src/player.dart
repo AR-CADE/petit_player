@@ -103,10 +103,11 @@ class PetitPlayerState extends State<PetitPlayer> {
           return ClipRect(
             child: SizedBox.expand(
               child: Center(
-                  child: AspectRatio(
-                aspectRatio: data.value.aspectRatio,
-                child: VideoPlayer(data),
-              )),
+                child: AspectRatio(
+                  aspectRatio: data.value.aspectRatio,
+                  child: VideoPlayer(data),
+                ),
+              ),
             ),
           );
         } else {
