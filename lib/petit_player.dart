@@ -1,6 +1,6 @@
 /// petit_player library
 library petit_player;
 
-export 'src/player.dart';
-export 'src/style/video_loading_style.dart';
-export 'src/utils/utils.dart';
+export 'src/core/style/video_loading_style.dart';
+export 'src/core/utils/utils.dart';
+export 'src/presentation/petit_player.dart';
