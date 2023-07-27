@@ -1,12 +1,23 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:petit_player/src/style/loader.dart';
+import 'package:petit_player/src/style/video_loading_style.dart';
 import 'package:petit_player/src/utils/utils.dart';
 import 'package:video_player/video_player.dart';
-import 'package:petit_player/src/style/video_loading_style.dart';
 
 class PetitPlayer extends StatefulWidget {
+  const PetitPlayer({
+    required this.uri,
+    super.key,
+    this.videoLoadingStyle,
+    this.streamController,
+    this.autoPlay = true,
+    this.aspectRation = 16 / 9,
+    this.httpHeaders = const <String, String>{},
+  });
+
   /// Video source
   final Uri uri;
 
@@ -24,16 +35,6 @@ class PetitPlayer extends StatefulWidget {
 
   /// Aspect Ration
   final double aspectRation;
-
-  const PetitPlayer({
-    Key? key,
-    required this.uri,
-    this.videoLoadingStyle,
-    this.streamController,
-    this.autoPlay = true,
-    this.aspectRation = 16 / 9,
-    this.httpHeaders = const <String, String>{},
-  }) : super(key: key);
 
   @override
   PetitPlayerState createState() => PetitPlayerState();
@@ -62,16 +63,19 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   @override
   void dispose() {
-    controller?.pause().then((value) => controller?.dispose().then((value) {
-          if (!mounted) {
-            return;
-          }
-          final streamController = widget.streamController;
-          if (streamController != null && streamController.isClosed == false) {
-            streamController.add(null);
-          }
-          futureInitializedVideoController = null;
-        }));
+    controller?.pause().then(
+          (value) => controller?.dispose().then((value) {
+            if (!mounted) {
+              return;
+            }
+            final streamController = widget.streamController;
+            if (streamController != null &&
+                streamController.isClosed == false) {
+              streamController.add(null);
+            }
+            futureInitializedVideoController = null;
+          }),
+        );
 
     super.dispose();
   }
@@ -79,44 +83,44 @@ class PetitPlayerState extends State<PetitPlayer> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<VideoPlayerController?>(
-        future: futureInitializedVideoController,
-        builder: (context, snapshot) {
-          final data = snapshot.data;
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData == true &&
-              data != null &&
-              data.value.isInitialized) {
-            final streamController = widget.streamController;
+      future: futureInitializedVideoController,
+      builder: (context, snapshot) {
+        final data = snapshot.data;
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData == true &&
+            data != null &&
+            data.value.isInitialized) {
+          final streamController = widget.streamController;
 
-            if (streamController != null &&
-                streamController.isClosed == false) {
-              streamController.add(data);
-            }
-
-            if (widget.autoPlay) {
-              data.play();
-            }
-
-            return ClipRect(
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: Center(
-                    child: AspectRatio(
-                  aspectRatio: data.value.aspectRatio,
-                  child: VideoPlayer(data),
-                )),
-              ),
-            );
-          } else {
-            return Center(
-                child: AspectRatio(
-                    aspectRatio: widget.aspectRation,
-                    child: widget.videoLoadingStyle != null
-                        ? widget.videoLoadingStyle?.loading
-                        : const Loader()));
+          if (streamController != null && streamController.isClosed == false) {
+            streamController.add(data);
           }
-        });
+
+          if (widget.autoPlay) {
+            data.play();
+          }
+
+          return ClipRect(
+            child: SizedBox.expand(
+              child: Center(
+                  child: AspectRatio(
+                aspectRatio: data.value.aspectRatio,
+                child: VideoPlayer(data),
+              )),
+            ),
+          );
+        } else {
+          return Center(
+            child: AspectRatio(
+              aspectRatio: widget.aspectRation,
+              child: widget.videoLoadingStyle != null
+                  ? widget.videoLoadingStyle?.loading
+                  : const Loader(),
+            ),
+          );
+        }
+      },
+    );
   }
 
   Future<void> loadUrl(Uri uri) async {
@@ -131,7 +135,7 @@ class PetitPlayerState extends State<PetitPlayer> {
 
     final timeout = widget.videoLoadingStyle != null
         ? widget.videoLoadingStyle!.timeout
-        : const Duration();
+        : Duration.zero;
 
     Future.delayed(timeout, () async {
       await videoInit(uri);
@@ -141,9 +145,12 @@ class PetitPlayerState extends State<PetitPlayer> {
 
   Future<void> videoInit(Uri uri) async {
     final urlIsNetwork = await compute(isNetwork, uri);
-    final bool offline = !urlIsNetwork;
 
-    controller = getController(uri, offline, httpHeaders: widget.httpHeaders);
+    controller = getController(
+      uri,
+      offline: !urlIsNetwork,
+      httpHeaders: widget.httpHeaders,
+    );
 
     futureInitializedVideoController =
         controller?.initialize().asStream().map((_) {

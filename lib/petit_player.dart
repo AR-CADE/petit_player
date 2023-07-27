@@ -1,3 +1,4 @@
+/// petit_player library
 library petit_player;
 
 export 'src/player.dart';
