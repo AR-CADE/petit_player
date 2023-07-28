@@ -32,7 +32,7 @@ class PetitPlayer extends StatefulWidget {
   /// HttpHeaders for network VideoPlayerController
   final Map<String, String> httpHeaders;
 
-  /// Aspect Ration
+  /// Aspect Ratio
   final double aspectRation;
 
   @override

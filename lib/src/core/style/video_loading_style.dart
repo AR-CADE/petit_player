@@ -11,7 +11,7 @@ class VideoLoadingStyle {
   /// THe Loader Widget
   final Widget loading;
 
-  /// The minnimum of time this loader will be shown
+  /// The minnimum amount of time this loader will be shown
   /// (temporarily not functional)
   final Duration timeout;
 }
