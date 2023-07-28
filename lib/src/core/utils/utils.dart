@@ -38,7 +38,6 @@ Future<void> fastForward({required VideoPlayerController controller}) async {
     await controller
         .seekTo(Duration(seconds: controller.value.position.inSeconds + 10));
   }
-  if (!controller.value.isPlaying) {}
 }
 
 Future<void> rewind(VideoPlayerController controller) async {
@@ -48,7 +47,6 @@ Future<void> rewind(VideoPlayerController controller) async {
   } else {
     await controller.seekTo(Duration.zero);
   }
-  if (!controller.value.isPlaying) {}
 }
 
 bool isNetwork(Uri uri) {
