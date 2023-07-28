@@ -61,13 +61,17 @@ class PlayerViewState extends State<PlayerView> {
       if (!mounted) {
         return;
       }
-      final streamController = widget.streamController;
-      if (streamController != null && streamController.isClosed == false) {
-        streamController.add(null);
-      }
+      _tryNotifyController(null);
     });
 
     super.dispose();
+  }
+
+  void _tryNotifyController(VideoPlayerController? controller) {
+    final streamController = widget.streamController;
+    if (streamController != null && streamController.isClosed == false) {
+      streamController.add(controller);
+    }
   }
 
   @override
@@ -77,12 +81,7 @@ class PlayerViewState extends State<PlayerView> {
         switch (state) {
           case PlayerInitialized():
             {
-              final streamController = widget.streamController;
-
-              if (streamController != null &&
-                  streamController.isClosed == false) {
-                streamController.add(state.controller);
-              }
+              _tryNotifyController(state.controller);
 
               if (widget.autoPlay) {
                 state.controller.play();
@@ -120,11 +119,7 @@ class PlayerViewState extends State<PlayerView> {
   }
 
   void loadUrl(Uri uri) {
-    final streamController = widget.streamController;
-    if (streamController != null && streamController.isClosed == false) {
-      streamController.add(null);
-    }
-
+    _tryNotifyController(null);
     context.read<PlayerBloc>().add(PlayerCreate(uri: uri));
   }
 }
