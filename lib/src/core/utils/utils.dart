@@ -31,19 +31,25 @@ VideoPlayerController getController(
   );
 }
 
-Future<void> fastForward({required VideoPlayerController controller}) async {
+Future<void> fastForward(
+  VideoPlayerController controller, {
+  int seekTo = 10,
+}) async {
   if (controller.value.duration.inSeconds -
           controller.value.position.inSeconds >
-      10) {
-    await controller
-        .seekTo(Duration(seconds: controller.value.position.inSeconds + 10));
+      seekTo) {
+    await controller.seekTo(
+        Duration(seconds: controller.value.position.inSeconds + seekTo));
   }
 }
 
-Future<void> rewind(VideoPlayerController controller) async {
-  if (controller.value.position.inSeconds > 10) {
-    await controller
-        .seekTo(Duration(seconds: controller.value.position.inSeconds - 10));
+Future<void> rewind(
+  VideoPlayerController controller, {
+  int seekTo = 10,
+}) async {
+  if (controller.value.position.inSeconds > seekTo) {
+    await controller.seekTo(
+        Duration(seconds: controller.value.position.inSeconds - seekTo));
   } else {
     await controller.seekTo(Duration.zero);
   }
