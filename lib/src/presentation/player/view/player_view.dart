@@ -44,13 +44,13 @@ class PlayerViewState extends State<PlayerView> {
   @override
   void initState() {
     super.initState();
-    loadUrl(widget.uri);
+    _loadUri(widget.uri);
   }
 
   @override
   void didUpdateWidget(covariant PlayerView oldWidget) {
     if (oldWidget.uri != widget.uri) {
-      loadUrl(widget.uri);
+      _loadUri(widget.uri);
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -118,7 +118,7 @@ class PlayerViewState extends State<PlayerView> {
     );
   }
 
-  void loadUrl(Uri uri) {
+  void _loadUri(Uri uri) {
     _tryNotifyController(null);
     context.read<PlayerBloc>().add(PlayerCreate(uri: uri));
   }
