@@ -39,7 +39,8 @@ Future<void> fastForward(
           controller.value.position.inSeconds >
       seekTo) {
     await controller.seekTo(
-        Duration(seconds: controller.value.position.inSeconds + seekTo));
+      Duration(seconds: controller.value.position.inSeconds + seekTo),
+    );
   }
 }
 
@@ -49,7 +50,8 @@ Future<void> rewind(
 }) async {
   if (controller.value.position.inSeconds > seekTo) {
     await controller.seekTo(
-        Duration(seconds: controller.value.position.inSeconds - seekTo));
+      Duration(seconds: controller.value.position.inSeconds - seekTo),
+    );
   } else {
     await controller.seekTo(Duration.zero);
   }
