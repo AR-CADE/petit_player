@@ -28,7 +28,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         );
 
         await emit.onEach<void>(
-          MergeStream([
+          ForkJoinStream.list<void>([
             TimerStream(null, event.timeout),
             _controller!.initialize().asStream()
           ]),
