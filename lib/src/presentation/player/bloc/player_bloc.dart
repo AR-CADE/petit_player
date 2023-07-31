@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:petit_player/src/core/utils/utils.dart';
-import 'package:rxdart/streams.dart';
 import 'package:video_player/video_player.dart';
 
 part 'player_event.dart';
@@ -28,10 +27,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         );
 
         await emit.onEach<void>(
-          ForkJoinStream.list<void>([
-            TimerStream(null, event.timeout),
-            _controller!.initialize().asStream()
-          ]),
+          _controller!.initialize().asStream(),
           onData: (_) {
             if (_controller!.value.isInitialized) {
               add(_PlayerInitialized(_controller!));
