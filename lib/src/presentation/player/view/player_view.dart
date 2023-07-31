@@ -121,8 +121,12 @@ class PlayerViewState extends State<PlayerView> {
   void _loadUri(Uri uri) {
     _tryNotifyController(null);
     final timeout = widget.videoLoadingStyle?.timeout;
-    context
-        .read<PlayerBloc>()
-        .add(PlayerCreate(uri: uri, timeout: timeout ?? Duration.zero));
+    context.read<PlayerBloc>().add(
+          PlayerCreate(
+            uri: uri,
+            timeout: timeout ?? Duration.zero,
+            httpHeaders: widget.httpHeaders,
+          ),
+        );
   }
 }
