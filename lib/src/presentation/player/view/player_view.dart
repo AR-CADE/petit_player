@@ -95,11 +95,10 @@ class PlayerViewState extends State<PlayerView> {
       child: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
           final aspectRation = widget.aspectRation;
+          final loading = widget.videoLoadingStyle?.loading;
           return switch (state) {
             PlayerLoading() => Center(
-                child: widget.videoLoadingStyle != null
-                    ? widget.videoLoadingStyle?.loading
-                    : const Loader(),
+                child: loading ?? const Loader(),
               ),
             PlayerInitialized() => ClipRect(
                 child: SizedBox.expand(
