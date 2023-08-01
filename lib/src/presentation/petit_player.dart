@@ -13,7 +13,7 @@ class PetitPlayer extends StatefulWidget {
     this.videoLoadingStyle,
     this.streamController,
     this.autoPlay = true,
-    this.aspectRation = 16 / 9,
+    this.aspectRation,
     this.httpHeaders = const <String, String>{},
   });
 
@@ -33,7 +33,7 @@ class PetitPlayer extends StatefulWidget {
   final Map<String, String> httpHeaders;
 
   /// Aspect Ratio
-  final double aspectRation;
+  final double? aspectRation;
 
   @override
   State<PetitPlayer> createState() => _PetitPlayerState();

@@ -14,7 +14,7 @@ class PlayerView extends StatefulWidget {
     this.videoLoadingStyle,
     this.streamController,
     this.autoPlay = true,
-    this.aspectRation = 16 / 9,
+    this.aspectRation,
     this.httpHeaders = const <String, String>{},
   });
 
@@ -94,7 +94,6 @@ class PlayerViewState extends State<PlayerView> {
       },
       child: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
-          final aspectRation = widget.aspectRation;
           final loading = widget.videoLoadingStyle?.loading;
           return switch (state) {
             PlayerLoading() => Center(
@@ -104,8 +103,10 @@ class PlayerViewState extends State<PlayerView> {
                 child: SizedBox.expand(
                   child: Center(
                     child: AspectRatio(
-                      aspectRatio:
-                          aspectRation ?? state.controller.value.aspectRatio,
+                      aspectRatio: widget.aspectRation ??
+                          (state.controller.value.aspectRatio == 1.0
+                              ? 16 / 9
+                              : state.controller.value.aspectRatio),
                       child: VideoPlayer(state.controller),
                     ),
                   ),
