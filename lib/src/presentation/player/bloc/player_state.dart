@@ -12,7 +12,9 @@ sealed class PlayerState extends Equatable {
 }
 
 /// The initial state until the of the [VideoPlayerController] is inititialized.
-final class PlayerLoading extends PlayerState {}
+final class PlayerLoading extends PlayerState {
+  const PlayerLoading();
+}
 
 /// {@template player_initialized}
 /// The state of the [PlayerBloc] after

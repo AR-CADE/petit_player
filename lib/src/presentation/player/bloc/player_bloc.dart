@@ -13,12 +13,12 @@ part 'player_state.dart';
 /// Bloc which manages the current [PlayerState]
 /// {@endtemplate}
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
-  PlayerBloc() : super(PlayerLoading()) {
+  PlayerBloc() : super(const PlayerLoading()) {
     on<PlayerCreate>(
       (event, emit) async {
         await dispose();
 
-        emit(PlayerLoading());
+        emit(const PlayerLoading());
 
         final urlIsNetwork = isNetwork(event.uri);
 
