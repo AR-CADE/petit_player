@@ -19,12 +19,12 @@ final class PlayerCreate extends PlayerEvent {
   const PlayerCreate({
     required this.uri,
     this.httpHeaders = const <String, String>{},
-    this.timeout = Duration.zero,
+    this.minLoadingDuration = Duration.zero,
   });
 
   final Uri uri;
   final Map<String, String> httpHeaders;
-  final Duration timeout;
+  final Duration minLoadingDuration;
 }
 
 final class _PlayerInitialized extends PlayerEvent {

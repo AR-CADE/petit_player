@@ -5,13 +5,12 @@ import 'package:petit_player/src/core/style/loader.dart';
 class VideoLoadingStyle {
   VideoLoadingStyle({
     this.loading = const Loader(),
-    this.timeout = Duration.zero,
+    this.minDuration = Duration.zero,
   });
 
   /// THe Loader Widget
   final Widget loading;
 
   /// The minnimum amount of time this loader will be shown
-  /// (temporarily not functional)
-  final Duration timeout;
+  final Duration minDuration;
 }

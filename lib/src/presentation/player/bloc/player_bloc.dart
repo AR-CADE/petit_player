@@ -29,7 +29,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
         await emit.onEach<void>(
           ForkJoinStream.list<void>([
-            TimerStream(null, event.timeout),
+            TimerStream(null, event.minLoadingDuration),
             _controller!.initialize().asStream()
           ]),
           onData: (_) {
