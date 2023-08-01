@@ -1,9 +1,10 @@
-import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:equatable/equatable.dart';
-import 'package:petit_player/src/core/utils/utils.dart';
-import 'package:rxdart/streams.dart';
-import 'package:video_player/video_player.dart';
+import 'package:bloc/bloc.dart' show Bloc, Emitter;
+import 'package:bloc_concurrency/bloc_concurrency.dart' show restartable;
+import 'package:equatable/equatable.dart' show Equatable;
+import 'package:petit_player/src/core/utils/utils.dart'
+    show getController, isNetwork;
+import 'package:rxdart/streams.dart' show ForkJoinStream, TimerStream;
+import 'package:video_player/video_player.dart' show VideoPlayerController;
 
 part 'player_event.dart';
 part 'player_state.dart';

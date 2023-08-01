@@ -1,10 +1,13 @@
-import 'dart:async';
+import 'dart:async' show StreamController;
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:petit_player/src/core/style/video_loading_style.dart';
-import 'package:petit_player/src/presentation/player/player.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter/material.dart'
+    show BuildContext, State, StatefulWidget, Widget;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:petit_player/src/core/style/video_loading_style.dart'
+    show VideoLoadingStyle;
+import 'package:petit_player/src/presentation/player/player.dart'
+    show PlayerBloc, PlayerView;
+import 'package:video_player/video_player.dart' show VideoPlayerController;
 
 class PetitPlayer extends StatefulWidget {
   const PetitPlayer({
