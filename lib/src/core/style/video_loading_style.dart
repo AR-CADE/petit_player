@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart' show Widget;
-import 'package:petit_player/src/core/style/loader.dart' show Loader;
+import 'package:flutter/material.dart';
+import 'package:petit_player/src/core/style/loader.dart';
 
 /// Video Loading Style
 class VideoLoadingStyle {

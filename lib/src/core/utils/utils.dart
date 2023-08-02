@@ -1,7 +1,6 @@
-import 'dart:io' show File;
-import 'package:flutter/material.dart' show BuildContext, Size;
-import 'package:video_player/video_player.dart'
-    show ClosedCaptionFile, VideoPlayerController, VideoPlayerOptions;
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 double calculateAspectRatio(BuildContext context, Size screenSize) {
   final width = screenSize.width;

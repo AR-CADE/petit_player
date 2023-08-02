@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart'
-    show
-        BuildContext,
-        Center,
-        CircularProgressIndicator,
-        SizedBox,
-        StatelessWidget,
-        Widget;
+import 'package:flutter/material.dart';
 
 /// Default Video Loader
 class Loader extends StatelessWidget {

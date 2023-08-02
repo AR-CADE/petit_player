@@ -1,28 +1,11 @@
-import 'dart:async' show Future, StreamController;
+import 'dart:async';
 
-import 'package:flutter/material.dart'
-    show
-        AspectRatio,
-        BuildContext,
-        Center,
-        ClipRect,
-        SizedBox,
-        State,
-        StatefulWidget,
-        Widget;
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocBuilder, BlocListener, ReadContext;
-import 'package:petit_player/petit_player.dart' show VideoLoadingStyle;
-import 'package:petit_player/src/core/style/loader.dart' show Loader;
-import 'package:petit_player/src/presentation/player/player.dart'
-    show
-        PlayerBloc,
-        PlayerCreate,
-        PlayerInitialized,
-        PlayerLoading,
-        PlayerState;
-import 'package:video_player/video_player.dart'
-    show VideoPlayer, VideoPlayerController;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:petit_player/petit_player.dart';
+import 'package:petit_player/src/core/style/loader.dart';
+import 'package:petit_player/src/presentation/player/player.dart';
+import 'package:video_player/video_player.dart';
 
 class PlayerView extends StatefulWidget {
   const PlayerView({
