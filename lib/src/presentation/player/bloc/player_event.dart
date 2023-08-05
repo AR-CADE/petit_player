@@ -22,6 +22,7 @@ final class PlayerCreate extends PlayerEvent {
     this.minLoadingDuration = Duration.zero,
     this.engine = PlayerEngine.native,
     this.autoPlay = true,
+    this.streamController,
   });
 
   final Uri uri;
@@ -29,6 +30,7 @@ final class PlayerCreate extends PlayerEvent {
   final Duration minLoadingDuration;
   final PlayerEngine engine;
   final bool autoPlay;
+  final StreamController<PlayerState?>? streamController;
 }
 
 final class _PlayerNativeInitialized extends PlayerEvent {

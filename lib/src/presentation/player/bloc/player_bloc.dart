@@ -21,7 +21,10 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       (event, emit) async {
         await dispose();
 
+        _streamController = event.streamController;
+
         emit(const PlayerLoading());
+        _tryNotifyController(null);
 
         switch (event.engine) {
           case PlayerEngine.mediaKit:
@@ -40,11 +43,19 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     );
 
     on<_PlayerNativeInitialized>(
-      (event, emit) => emit(PlayerNativeInitialized(event.controller)),
+      (event, emit) {
+        final state = PlayerNativeInitialized(event.controller);
+        _tryNotifyController(state);
+        emit(state);
+      },
     );
 
     on<_PlayerMediaKitInitialized>(
-      (event, emit) => emit(PlayerMediaKitInitialized(event.controller)),
+      (event, emit) {
+        final state = PlayerMediaKitInitialized(event.controller);
+        _tryNotifyController(state);
+        emit(state);
+      },
     );
 
     on<PlayerDispose>(_onPlayerDispose);
@@ -108,19 +119,30 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     player.stream.error.listen((error) => debugPrint(error));
   }
 
+  void _tryNotifyController(PlayerState? state) {
+    final streamController = _streamController;
+    if (streamController != null && streamController.isClosed == false) {
+      streamController.add(state);
+    }
+  }
+
   /// Video Player Controller
   VideoPlayerController? _nativeController;
 
   /// Media Kit Video Controller
   VideoController? _mediakitController;
 
+  StreamController<PlayerState?>? _streamController;
+
   Future<void> dispose() async {
+    _tryNotifyController(null);
     await _nativeController?.pause();
     await _nativeController?.dispose();
     await _mediakitController?.player.pause();
     await _mediakitController?.player.dispose();
     _nativeController = null;
     _mediakitController = null;
+    _streamController = null;
   }
 
   Future<void> _onPlayerDispose(
