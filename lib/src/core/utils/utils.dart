@@ -1,11 +1,24 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:video_player/video_player.dart';
 
-double calculateAspectRatio(BuildContext context, Size screenSize) {
-  final width = screenSize.width;
-  final height = screenSize.height;
-  return width > height ? width / height : height / width;
+enum PlayerEngine { native, mediaKit }
+
+const defaultPlayerAspectRatio = 16 / 9;
+
+double calculateVideoAspectRatio(int? width, int? height) {
+  final w = width ?? 1;
+  final h = height ?? 1;
+
+  if (w == 0 || h == 0) {
+    return 1;
+  }
+
+  if (w < 0 || h < 0) {
+    return 1;
+  }
+
+  return w / h;
 }
 
 VideoPlayerController getController(
@@ -31,7 +44,7 @@ VideoPlayerController getController(
   );
 }
 
-Future<void> fastForward(
+Future<void> nativeFastForward(
   VideoPlayerController controller, {
   int seekTo = 10,
 }) async {
@@ -44,7 +57,7 @@ Future<void> fastForward(
   }
 }
 
-Future<void> rewind(
+Future<void> nativeRewind(
   VideoPlayerController controller, {
   int seekTo = 10,
 }) async {
@@ -54,6 +67,32 @@ Future<void> rewind(
     );
   } else {
     await controller.seekTo(Duration.zero);
+  }
+}
+
+Future<void> mediaKitFastForward(
+  VideoController controller, {
+  int seekTo = 10,
+}) async {
+  if (controller.player.state.duration.inSeconds -
+          controller.player.state.position.inSeconds >
+      seekTo) {
+    await controller.player.seek(
+      Duration(seconds: controller.player.state.position.inSeconds + seekTo),
+    );
+  }
+}
+
+Future<void> mediaKitRewind(
+  VideoController controller, {
+  int seekTo = 10,
+}) async {
+  if (controller.player.state.position.inSeconds > seekTo) {
+    await controller.player.seek(
+      Duration(seconds: controller.player.state.position.inSeconds - seekTo),
+    );
+  } else {
+    await controller.player.seek(Duration.zero);
   }
 }
 

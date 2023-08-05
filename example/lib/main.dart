@@ -1,13 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:petit_player/petit_player.dart';
 
 void main() {
+  if (!kIsWeb) {
+    MediaKit.ensureInitialized();
+  }
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({required this.title, super.key});
 
   final String title;
 
@@ -33,11 +37,7 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final uri = Uri.parse(
-      !kIsWeb
-          ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-          : 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-    );
+    final uri = Uri.parse('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8');
 
     return Scaffold(
       appBar: AppBar(
@@ -47,29 +47,36 @@ class MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             SizedBox(
-              height: 600,
+              height: 720,
               child: PetitPlayer(
+                engine: kIsWeb ? PlayerEngine.native : PlayerEngine.mediaKit,
                 uri: uri,
                 autoPlay: !kIsWeb,
+                keepAspectRatio: false,
               ),
             ),
-            if (kIsWeb)
-              const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(children: [
-                    ...<Widget>[
-                      Text(
-                          "Right-click the black rectangle to show the contex menu,",
-                          style: TextStyle(color: Colors.red, fontSize: 32)),
-                      Text(
-                          "and select 'Show Controls' or 'Play' to start the video",
-                          style: TextStyle(color: Colors.red, fontSize: 32))
-                    ]
-                  ])),
+            const Visibility(
+              visible: kIsWeb,
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Text(
+                      // ignore: lines_longer_than_80_chars
+                      'Right-click the black rectangle to show the contex menu,',
+                      style: TextStyle(color: Colors.red, fontSize: 32),
+                    ),
+                    Text(
+                      "and select 'Show Controls' or 'Play' to start the video",
+                      style: TextStyle(color: Colors.red, fontSize: 32),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

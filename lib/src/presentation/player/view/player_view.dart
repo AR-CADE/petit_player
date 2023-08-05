@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:petit_player/petit_player.dart';
 import 'package:petit_player/src/core/style/loader.dart';
-import 'package:petit_player/src/presentation/player/player.dart';
+import 'package:petit_player/src/presentation/player/widgets/center_aspect_ratio.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerView extends StatefulWidget {
@@ -15,8 +16,13 @@ class PlayerView extends StatefulWidget {
     this.streamController,
     this.autoPlay = true,
     this.aspectRation,
+    this.keepAspectRatio = true,
     this.httpHeaders = const <String, String>{},
+    this.engine = PlayerEngine.native,
   });
+
+  /// Player engine (curently supported : 'native (default)', 'mediaKit')
+  final PlayerEngine engine;
 
   /// Video source
   final Uri uri;
@@ -25,7 +31,7 @@ class PlayerView extends StatefulWidget {
   final VideoLoadingStyle? videoLoadingStyle;
 
   /// A Stream Controller of VideoPlayerController
-  final StreamController<VideoPlayerController?>? streamController;
+  final StreamController<PlayerState?>? streamController;
 
   /// Auto Play on init
   final bool autoPlay;
@@ -35,6 +41,10 @@ class PlayerView extends StatefulWidget {
 
   /// Aspect Ratio
   final double? aspectRation;
+
+  /// Keep Aspect Ratio,
+  /// NOTE : if `aspectRation` is set, `keepAspectRatio` will be set to true
+  final bool keepAspectRatio;
 
   @override
   PlayerViewState createState() => PlayerViewState();
@@ -67,25 +77,26 @@ class PlayerViewState extends State<PlayerView> {
     super.dispose();
   }
 
-  void _tryNotifyController(VideoPlayerController? controller) {
+  void _tryNotifyController(PlayerState? state) {
     final streamController = widget.streamController;
     if (streamController != null && streamController.isClosed == false) {
-      streamController.add(controller);
+      streamController.add(state);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<PlayerBloc, PlayerState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         switch (state) {
-          case PlayerInitialized():
+          case PlayerNativeInitialized():
             {
-              _tryNotifyController(state.controller);
-
-              if (widget.autoPlay) {
-                state.controller.play();
-              }
+              _tryNotifyController(state);
+              break;
+            }
+          case PlayerMediaKitInitialized():
+            {
+              _tryNotifyController(state);
               break;
             }
           case PlayerLoading():
@@ -99,23 +110,66 @@ class PlayerViewState extends State<PlayerView> {
             PlayerLoading() => Center(
                 child: loading ?? const Loader(),
               ),
-            PlayerInitialized() => ClipRect(
+            PlayerNativeInitialized() => ClipRect(
                 child: SizedBox.expand(
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: widget.aspectRation ??
-                          (state.controller.value.aspectRatio == 1.0
-                              ? 16 / 9
-                              : state.controller.value.aspectRatio),
-                      child: VideoPlayer(state.controller),
-                    ),
+                  child: Builder(
+                    builder: (context) {
+                      return switch ((widget.aspectRation != null) ||
+                          widget.keepAspectRatio) {
+                        true => CenterAspectRatio(
+                            aspectRatio: _calculateNativeAspectRatio(state),
+                            child: VideoPlayer(state.controller),
+                          ),
+                        false => ColoredBox(
+                            color: Colors.black,
+                            child: VideoPlayer(state.controller),
+                          ),
+                      };
+                    },
                   ),
                 ),
               ),
+            PlayerMediaKitInitialized() => ClipRect(
+                child: SizedBox.expand(
+                  child: Builder(
+                    builder: (context) {
+                      return switch ((widget.aspectRation != null) ||
+                          widget.keepAspectRatio) {
+                        true => CenterAspectRatio(
+                            aspectRatio: _calculateMediaKitAspectRatio(state),
+                            child: Video(
+                              controller: state.controller,
+                              controls: null,
+                            ),
+                          ),
+                        false => Video(
+                            controller: state.controller,
+                            controls: null,
+                          ),
+                      };
+                    },
+                  ),
+                ),
+              )
           };
         },
       ),
     );
+  }
+
+  double _calculateNativeAspectRatio(PlayerNativeInitialized state) {
+    final ratio = state.controller.value.aspectRatio;
+    return widget.aspectRation ??
+        (ratio == 1.0 ? defaultPlayerAspectRatio : ratio);
+  }
+
+  double _calculateMediaKitAspectRatio(PlayerMediaKitInitialized state) {
+    final videoAspectRatio = calculateVideoAspectRatio(
+      state.controller.player.state.width,
+      state.controller.player.state.height,
+    );
+    return widget.aspectRation ??
+        (videoAspectRatio == 1.0 ? defaultPlayerAspectRatio : videoAspectRatio);
   }
 
   void _loadUri(Uri uri) {
@@ -126,6 +180,8 @@ class PlayerViewState extends State<PlayerView> {
             uri: uri,
             minLoadingDuration: minLoadingDuration ?? Duration.zero,
             httpHeaders: widget.httpHeaders,
+            engine: widget.engine,
+            autoPlay: widget.autoPlay,
           ),
         );
   }
