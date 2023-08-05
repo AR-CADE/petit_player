@@ -29,7 +29,7 @@ class PetitPlayer extends StatelessWidget {
   final VideoLoadingStyle? videoLoadingStyle;
 
   /// A Stream Controller of VideoPlayerController
-  final StreamController<PlayerState?>? streamController;
+  final StreamController<PlayerState>? streamController;
 
   /// Auto Play on init
   final bool autoPlay;

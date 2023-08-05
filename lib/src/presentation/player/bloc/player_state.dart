@@ -16,6 +16,11 @@ final class PlayerLoading extends PlayerState {
   const PlayerLoading();
 }
 
+/// The uninitialized state.
+final class PlayerUninitialized extends PlayerState {
+  const PlayerUninitialized();
+}
+
 /// {@template player_natine_initialized}
 /// The state of the [PlayerBloc] after
 /// the [VideoPlayerController] has been inititialized.

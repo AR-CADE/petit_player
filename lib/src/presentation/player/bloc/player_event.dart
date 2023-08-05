@@ -30,7 +30,7 @@ final class PlayerCreate extends PlayerEvent {
   final Duration minLoadingDuration;
   final PlayerEngine engine;
   final bool autoPlay;
-  final StreamController<PlayerState?>? streamController;
+  final StreamController<PlayerState>? streamController;
 }
 
 final class _PlayerNativeInitialized extends PlayerEvent {

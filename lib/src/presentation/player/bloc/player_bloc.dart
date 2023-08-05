@@ -16,7 +16,9 @@ part 'player_state.dart';
 /// Bloc which manages the current [PlayerState]
 /// {@endtemplate}
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
-  PlayerBloc() : super(const PlayerLoading()) {
+  PlayerBloc() : super(const PlayerUninitialized()) {
+    _tryNotifyController(const PlayerUninitialized());
+
     on<PlayerCreate>(
       (event, emit) async {
         await dispose();
@@ -24,7 +26,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         _streamController = event.streamController;
 
         emit(const PlayerLoading());
-        _tryNotifyController(null);
+        _tryNotifyController(const PlayerLoading());
 
         switch (event.engine) {
           case PlayerEngine.mediaKit:
@@ -119,7 +121,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     player.stream.error.listen((error) => debugPrint(error));
   }
 
-  void _tryNotifyController(PlayerState? state) {
+  void _tryNotifyController(PlayerState state) {
     final streamController = _streamController;
     if (streamController != null && streamController.isClosed == false) {
       streamController.add(state);
@@ -132,10 +134,10 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   /// Media Kit Video Controller
   VideoController? _mediakitController;
 
-  StreamController<PlayerState?>? _streamController;
+  StreamController<PlayerState>? _streamController;
 
   Future<void> dispose() async {
-    _tryNotifyController(null);
+    _tryNotifyController(const PlayerUninitialized());
     await _nativeController?.pause();
     await _nativeController?.dispose();
     await _mediakitController?.player.pause();

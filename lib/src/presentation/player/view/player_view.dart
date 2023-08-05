@@ -31,7 +31,7 @@ class PlayerView extends StatefulWidget {
   final VideoLoadingStyle? videoLoadingStyle;
 
   /// A Stream Controller of VideoPlayerController
-  final StreamController<PlayerState?>? streamController;
+  final StreamController<PlayerState>? streamController;
 
   /// Auto Play on init
   final bool autoPlay;
@@ -86,11 +86,14 @@ class _PlayerViewState extends State<PlayerView> {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         final loading = widget.videoLoadingStyle?.loading;
-        return switch (state) {
-          PlayerLoading() => Center(
+        switch (state) {
+          case PlayerLoading():
+          case PlayerUninitialized():
+            return Center(
               child: loading ?? const Loader(),
-            ),
-          PlayerNativeInitialized() => ClipRect(
+            );
+          case PlayerNativeInitialized():
+            return ClipRect(
               child: SizedBox.expand(
                 child: Builder(
                   builder: (context) {
@@ -108,8 +111,9 @@ class _PlayerViewState extends State<PlayerView> {
                   },
                 ),
               ),
-            ),
-          PlayerMediaKitInitialized() => ClipRect(
+            );
+          case PlayerMediaKitInitialized():
+            return ClipRect(
               child: SizedBox.expand(
                 child: Builder(
                   builder: (context) {
@@ -130,8 +134,8 @@ class _PlayerViewState extends State<PlayerView> {
                   },
                 ),
               ),
-            )
-        };
+            );
+        }
       },
     );
   }
