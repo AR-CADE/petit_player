@@ -39,7 +39,7 @@ class PlayerView extends StatefulWidget {
   /// HttpHeaders for network VideoPlayerController
   final Map<String, String> httpHeaders;
 
-  /// Aspect Ratio (Any value > to 0 is valid)
+  /// Aspect Ratio (Any value > 0 is valid)
   final double? aspectRation;
 
   /// Keep Aspect Ratio,
