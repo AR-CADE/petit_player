@@ -39,7 +39,7 @@ class PlayerView extends StatefulWidget {
   /// HttpHeaders for network VideoPlayerController
   final Map<String, String> httpHeaders;
 
-  /// Aspect Ratio
+  /// Aspect Ratio (Any value > to 0 is valid)
   final double? aspectRation;
 
   /// Keep Aspect Ratio,
@@ -142,8 +142,9 @@ class _PlayerViewState extends State<PlayerView> {
 
   double _calculateNativeAspectRatio(PlayerNativeInitialized state) {
     final ratio = state.controller.value.aspectRatio;
-    return widget.aspectRation ??
+    final computedRatio = widget.aspectRation ??
         (ratio == 1.0 ? defaultPlayerAspectRatio : ratio);
+    return computedRatio > 0.0 ? computedRatio : 1.0;
   }
 
   double _calculateMediaKitAspectRatio(PlayerMediaKitInitialized state) {
@@ -151,7 +152,8 @@ class _PlayerViewState extends State<PlayerView> {
       state.controller.player.state.width,
       state.controller.player.state.height,
     );
-    return widget.aspectRation ??
+    final computedRatio = widget.aspectRation ??
         (videoAspectRatio == 1.0 ? defaultPlayerAspectRatio : videoAspectRatio);
+    return computedRatio > 0.0 ? computedRatio : 1.0;
   }
 }
