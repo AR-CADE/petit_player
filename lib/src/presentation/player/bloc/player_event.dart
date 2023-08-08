@@ -20,7 +20,6 @@ final class PlayerCreate extends PlayerEvent {
     required this.uri,
     this.httpHeaders = const <String, String>{},
     this.minLoadingDuration = Duration.zero,
-    this.engine = PlayerEngine.native,
     this.autoPlay = true,
     this.streamController,
   });
@@ -28,26 +27,15 @@ final class PlayerCreate extends PlayerEvent {
   final Uri uri;
   final Map<String, String> httpHeaders;
   final Duration minLoadingDuration;
-  final PlayerEngine engine;
   final bool autoPlay;
   final StreamController<PlayerState>? streamController;
 }
 
-final class _PlayerNativeInitialized extends PlayerEvent {
-  const _PlayerNativeInitialized(this.controller);
+final class _PlayerInitialized extends PlayerEvent {
+  const _PlayerInitialized(this.controller);
 
   /// The current controller.
   final VideoPlayerController controller;
-
-  @override
-  List<Object> get props => [controller];
-}
-
-final class _PlayerMediaKitInitialized extends PlayerEvent {
-  const _PlayerMediaKitInitialized(this.controller);
-
-  /// The current controller.
-  final VideoController controller;
 
   @override
   List<Object> get props => [controller];

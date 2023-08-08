@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:petit_player/src/core/utils/utils.dart';
 import 'package:video_player/video_player.dart';
 
@@ -28,33 +25,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         emit(const PlayerLoading());
         _tryNotifyController(const PlayerLoading());
 
-        switch (event.engine) {
-          case PlayerEngine.mediaKit:
-            {
-              await _getMediaKitInitializedController(event, emit);
-              break;
-            }
-          case PlayerEngine.native:
-            {
-              await _getNativeInitializedController(event, emit);
-              break;
-            }
-        }
+        await _getNativeInitializedController(event, emit);
       },
       transformer: restartable(),
     );
 
-    on<_PlayerNativeInitialized>(
+    on<_PlayerInitialized>(
       (event, emit) {
-        final state = PlayerNativeInitialized(event.controller);
-        _tryNotifyController(state);
-        emit(state);
-      },
-    );
-
-    on<_PlayerMediaKitInitialized>(
-      (event, emit) {
-        final state = PlayerMediaKitInitialized(event.controller);
+        final state = PlayerInitialized(event.controller);
         _tryNotifyController(state);
         emit(state);
       },
@@ -83,42 +61,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
         if (event.autoPlay) {
           await _nativeController!.play();
         }
-        add(_PlayerNativeInitialized(_nativeController!));
+        add(_PlayerInitialized(_nativeController!));
       }
     });
-  }
-
-  Future<void> _getMediaKitInitializedController(
-    PlayerCreate event,
-    Emitter<PlayerState> emit,
-  ) async {
-    final player = Player(
-      configuration: PlayerConfiguration(
-        ready: () {
-          if (event.autoPlay) {
-            Future.wait<void>([
-              Future.delayed(event.minLoadingDuration),
-              _mediakitController!.player.play()
-            ]).then(
-              (_) => add(_PlayerMediaKitInitialized(_mediakitController!)),
-            );
-          } else {
-            add(_PlayerMediaKitInitialized(_mediakitController!));
-          }
-        },
-      ),
-    );
-
-    _mediakitController = VideoController(player);
-
-    await player.open(
-      Media(
-        event.uri.toString(),
-        httpHeaders: kIsWeb ? null : event.httpHeaders,
-      ),
-    );
-
-    player.stream.error.listen((error) => debugPrint(error));
   }
 
   void _tryNotifyController(PlayerState state) {
@@ -131,19 +76,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   /// Video Player Controller
   VideoPlayerController? _nativeController;
 
-  /// Media Kit Video Controller
-  VideoController? _mediakitController;
-
   StreamController<PlayerState>? _streamController;
 
   Future<void> dispose() async {
     _tryNotifyController(const PlayerUninitialized());
     await _nativeController?.pause();
     await _nativeController?.dispose();
-    await _mediakitController?.player.pause();
-    await _mediakitController?.player.dispose();
     _nativeController = null;
-    _mediakitController = null;
     _streamController = null;
   }
 

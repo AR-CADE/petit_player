@@ -1,12 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:petit_player/petit_player.dart';
 
 void main() {
-  if (!kIsWeb) {
-    MediaKit.ensureInitialized();
-  }
   runApp(const MyApp());
 }
 
@@ -49,7 +45,6 @@ class MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 720,
               child: PetitPlayer(
-                engine: kIsWeb ? PlayerEngine.native : PlayerEngine.mediaKit,
                 uri: uri,
                 autoPlay: !kIsWeb,
                 keepAspectRatio: false,

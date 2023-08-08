@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petit_player/src/core/style/video_loading_style.dart';
-import 'package:petit_player/src/core/utils/utils.dart';
 import 'package:petit_player/src/presentation/player/player.dart';
 
 class PetitPlayer extends StatelessWidget {
@@ -16,11 +15,7 @@ class PetitPlayer extends StatelessWidget {
     this.aspectRation,
     this.keepAspectRatio = true,
     this.httpHeaders = const <String, String>{},
-    this.engine = PlayerEngine.native,
   });
-
-  /// Player engine (curently supported : 'native (default)', 'mediaKit')
-  final PlayerEngine engine;
 
   /// Video source
   final Uri uri;
@@ -56,7 +51,6 @@ class PetitPlayer extends StatelessWidget {
         aspectRation: aspectRation,
         keepAspectRatio: keepAspectRatio,
         httpHeaders: httpHeaders,
-        engine: engine,
       ),
     );
   }

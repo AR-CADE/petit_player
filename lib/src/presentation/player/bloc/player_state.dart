@@ -21,29 +21,15 @@ final class PlayerUninitialized extends PlayerState {
   const PlayerUninitialized();
 }
 
-/// {@template player_natine_initialized}
+/// {@template player_initialized}
 /// The state of the [PlayerBloc] after
 /// the [VideoPlayerController] has been inititialized.
 /// {@endtemplate}
-final class PlayerNativeInitialized extends PlayerState {
-  const PlayerNativeInitialized(this.controller);
+final class PlayerInitialized extends PlayerState {
+  const PlayerInitialized(this.controller);
 
   /// The current controller.
   final VideoPlayerController controller;
-
-  @override
-  List<Object> get props => [controller];
-}
-
-/// {@template player_media_kit_initialized}
-/// The state of the [PlayerBloc] after
-/// the [VideoPlayerController] has been inititialized.
-/// {@endtemplate}
-final class PlayerMediaKitInitialized extends PlayerState {
-  const PlayerMediaKitInitialized(this.controller);
-
-  /// The current controller.
-  final VideoController controller;
 
   @override
   List<Object> get props => [controller];

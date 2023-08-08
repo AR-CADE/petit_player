@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:video_player/video_player.dart';
-
-enum PlayerEngine { native, mediaKit }
 
 const defaultPlayerAspectRatio = 16 / 9;
 
@@ -44,7 +41,7 @@ VideoPlayerController getController(
   );
 }
 
-Future<void> nativeFastForward(
+Future<void> fastForward(
   VideoPlayerController controller, {
   int seekTo = 10,
 }) async {
@@ -57,7 +54,7 @@ Future<void> nativeFastForward(
   }
 }
 
-Future<void> nativeRewind(
+Future<void> rewind(
   VideoPlayerController controller, {
   int seekTo = 10,
 }) async {
@@ -67,32 +64,6 @@ Future<void> nativeRewind(
     );
   } else {
     await controller.seekTo(Duration.zero);
-  }
-}
-
-Future<void> mediaKitFastForward(
-  VideoController controller, {
-  int seekTo = 10,
-}) async {
-  if (controller.player.state.duration.inSeconds -
-          controller.player.state.position.inSeconds >
-      seekTo) {
-    await controller.player.seek(
-      Duration(seconds: controller.player.state.position.inSeconds + seekTo),
-    );
-  }
-}
-
-Future<void> mediaKitRewind(
-  VideoController controller, {
-  int seekTo = 10,
-}) async {
-  if (controller.player.state.position.inSeconds > seekTo) {
-    await controller.player.seek(
-      Duration(seconds: controller.player.state.position.inSeconds - seekTo),
-    );
-  } else {
-    await controller.player.seek(Duration.zero);
   }
 }
 
