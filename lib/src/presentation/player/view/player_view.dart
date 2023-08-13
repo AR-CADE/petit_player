@@ -80,35 +80,66 @@ class _PlayerViewState extends State<PlayerView> {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         final loading = widget.videoLoadingStyle?.loading;
-        switch (state) {
-          case PlayerLoading():
-          case PlayerUninitialized():
-            return Center(
-              child: loading ?? const Loader(),
-            );
-          case PlayerInitialized():
-            return ClipRect(
-              child: SizedBox.expand(
-                child: Builder(
-                  builder: (context) {
-                    return switch ((widget.aspectRation != null) ||
-                        widget.keepAspectRatio) {
-                      true => CenterAspectRatio(
-                          aspectRatio: _calculateNativeAspectRatio(state),
-                          child: VideoPlayer(state.controller),
-                        ),
-                      false => ColoredBox(
-                          color: Colors.black,
-                          child: VideoPlayer(state.controller),
-                        ),
-                    };
-                  },
-                ),
-              ),
-            );
+        if (state == const PlayerLoading() ||
+            state == const PlayerUninitialized()) {
+          return Center(
+            child: loading ?? const Loader(),
+          );
         }
+
+        return ClipRect(
+          child: SizedBox.expand(
+            child: Builder(
+              builder: (context) {
+                return switch (
+                    (widget.aspectRation != null) || widget.keepAspectRatio) {
+                  true => Builder(
+                      builder: (context) {
+                        return CenterAspectRatio(
+                          aspectRatio: _calculateAspectRatio(state),
+                          child: Builder(
+                            builder: (context) {
+                              switch (state) {
+                                case PlayerInitialized():
+                                  return VideoPlayer(state.controller);
+                                case PlayerLoading():
+                                case PlayerUninitialized():
+                                  return const SizedBox.expand();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  false => ColoredBox(
+                      color: Colors.black,
+                      child: Builder(
+                        builder: (context) {
+                          switch (state) {
+                            case PlayerInitialized():
+                              return VideoPlayer(state.controller);
+                            case PlayerLoading():
+                            case PlayerUninitialized():
+                              return const SizedBox.expand();
+                          }
+                        },
+                      ),
+                    )
+                };
+              },
+            ),
+          ),
+        );
       },
     );
+  }
+
+  double _calculateAspectRatio(PlayerState state) {
+    return switch (state) {
+      PlayerInitialized() => _calculateNativeAspectRatio(state),
+      PlayerLoading() => defaultPlayerAspectRatio,
+      PlayerUninitialized() => defaultPlayerAspectRatio,
+    };
   }
 
   double _calculateNativeAspectRatio(PlayerInitialized state) {
