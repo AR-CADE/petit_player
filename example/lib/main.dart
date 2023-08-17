@@ -70,7 +70,7 @@ class MyHomePageState extends State<MyHomePage> {
                     Text(
                       "and select 'Show Controls' or 'Play' to start the video",
                       style: TextStyle(color: Colors.red, fontSize: 32),
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -80,7 +80,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
-      _nativeController!.initialize()
+      _nativeController!.initialize(),
     ]).then((_) {
       if (_nativeController!.value.isInitialized) {
         if (event.autoPlay) {
@@ -114,7 +114,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
-      _player!.updateTexture()
+      _player!.updateTexture(),
     ]).then((_) {
       add(_PlayerFvpInitialized(_player!));
     });
