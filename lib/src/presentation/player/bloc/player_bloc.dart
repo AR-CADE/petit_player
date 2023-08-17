@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-//import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fvp/mdk.dart'
@@ -44,7 +43,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
             }
         }
       },
-      //transformer: restartable(),
     );
 
     on<_PlayerInitialized>(
@@ -108,9 +106,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     if (event.autoPlay) {
       _player!.state = mdk.PlaybackState.playing;
     }
-    _player!
-        .updateTexture()
-        .then((value) => add(_PlayerFvpInitialized(_player!)));
 
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
