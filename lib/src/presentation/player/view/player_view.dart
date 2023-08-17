@@ -96,60 +96,53 @@ class _PlayerViewState extends State<PlayerView> {
       color: widget.background,
       child: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
-          return ColoredBox(
-            color: widget.background,
-            child: Builder(
-              builder: (context) {
-                if (state == const PlayerLoading() ||
-                    state == const PlayerUninitialized()) {
-                  return Center(
-                    child: widget.videoLoadingStyle?.loading ?? const Loader(),
-                  );
-                }
+          if (state == const PlayerLoading() ||
+              state == const PlayerUninitialized()) {
+            return Center(
+              child: widget.videoLoadingStyle?.loading ?? const Loader(),
+            );
+          }
 
-                switch (state) {
-                  case PlayerInitialized():
-                    return ClipRect(
-                      clipBehavior: Clip.antiAlias,
-                      child: SizedBox.expand(
-                        child: switch ((widget.aspectRation != null) ||
-                            widget.keepAspectRatio) {
-                          true => Center(
-                              child: AspectRatio(
-                                aspectRatio: _calculateAspectRatio(state)!,
-                                child: VideoPlayer(state.controller),
-                              ),
-                            ),
-                          false => VideoPlayer(state.controller)
-                        },
+          switch (state) {
+            case PlayerInitialized():
+              return ClipRect(
+                clipBehavior: Clip.antiAlias,
+                child: SizedBox.expand(
+                  child: switch (
+                      (widget.aspectRation != null) || widget.keepAspectRatio) {
+                    true => Center(
+                        child: AspectRatio(
+                          aspectRatio: _calculateAspectRatio(state)!,
+                          child: VideoPlayer(state.controller),
+                        ),
                       ),
-                    );
-                  case PlayerFvpInitialized():
-                    return ClipRect(
-                      child: SizedBox.expand(
-                        child: switch ((widget.aspectRation != null) ||
-                            widget.keepAspectRatio) {
-                          true => Center(
-                              child: AspectRatio(
-                                aspectRatio: _calculateAspectRatio(state)!,
-                                child: FvpTexturePlayer(
-                                  textureId: state.player.textureId,
-                                ),
-                              ),
-                            ),
-                          false => FvpTexturePlayer(
-                              textureId: state.player.textureId,
-                            )
-                        },
+                    false => VideoPlayer(state.controller)
+                  },
+                ),
+              );
+            case PlayerFvpInitialized():
+              return ClipRect(
+                child: SizedBox.expand(
+                  child: switch (
+                      (widget.aspectRation != null) || widget.keepAspectRatio) {
+                    true => Center(
+                        child: AspectRatio(
+                          aspectRatio: _calculateAspectRatio(state)!,
+                          child: FvpTexturePlayer(
+                            textureId: state.player.textureId,
+                          ),
+                        ),
                       ),
-                    );
-                  case PlayerLoading():
-                  case PlayerUninitialized():
-                    throw Exception('Unsuported player');
-                }
-              },
-            ),
-          );
+                    false => FvpTexturePlayer(
+                        textureId: state.player.textureId,
+                      )
+                  },
+                ),
+              );
+            case PlayerLoading():
+            case PlayerUninitialized():
+              throw Exception('Unsuported player');
+          }
         },
       ),
     );
