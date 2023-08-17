@@ -34,16 +34,13 @@ import 'package:petit_player/petit_player.dart';
 
 ```dart
     Center(
-        child: Column(
-            children: [
-            SizedBox(
-                height: 600,
-                child: PetitPlayer(
-                uri: Uri.parse('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'),
-                ),
-            ),
-            ],
+      child: SizedBox(
+        height: 600,
+        child: PetitPlayer(
+          uri: Uri.parse(
+              'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8'),
         ),
+      ),
     ),
 ```
 

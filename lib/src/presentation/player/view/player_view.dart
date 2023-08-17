@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petit_player/petit_player.dart';
 import 'package:petit_player/src/core/style/loader.dart';
-import 'package:petit_player/src/presentation/player/widgets/center_aspect_ratio.dart';
+import 'package:petit_player/src/presentation/player/widgets/fvp_texture_player.dart';
 import 'package:video_player/video_player.dart';
 
 class PlayerView extends StatefulWidget {
@@ -17,6 +17,9 @@ class PlayerView extends StatefulWidget {
     this.aspectRation,
     this.keepAspectRatio = true,
     this.httpHeaders = const <String, String>{},
+    this.background = Colors.transparent,
+    this.engine = PlayerEngine.native,
+    this.fvpOptions,
   });
 
   /// Video source
@@ -40,6 +43,16 @@ class PlayerView extends StatefulWidget {
   /// Keep Aspect Ratio,
   /// NOTE : if `aspectRation` is set, `keepAspectRatio` will be set to true
   final bool keepAspectRatio;
+
+  /// Background Color,
+  final Color background;
+
+  /// Player engine (curently supported : 'native (default)', 'fvp')
+  /// NOTE: FVP renderer works on Android, iOS, Linux, macOS and Windows but not Web (see more at: https://pub.dev/packages/fvp)
+  final PlayerEngine engine;
+
+  /// The Options to pass to FVP
+  final Map<String, dynamic>? fvpOptions;
 
   @override
   State<PlayerView> createState() => _PlayerViewState();
@@ -72,73 +85,82 @@ class _PlayerViewState extends State<PlayerView> {
       httpHeaders: widget.httpHeaders,
       autoPlay: widget.autoPlay,
       streamController: widget.streamController,
+      engine: widget.engine,
+      fvpOptions: widget.fvpOptions,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlayerBloc, PlayerState>(
-      builder: (context, state) {
-        final loading = widget.videoLoadingStyle?.loading;
-        if (state == const PlayerLoading() ||
-            state == const PlayerUninitialized()) {
-          return Center(
-            child: loading ?? const Loader(),
-          );
-        }
-
-        return ClipRect(
-          child: SizedBox.expand(
+    return ColoredBox(
+      color: widget.background,
+      child: BlocBuilder<PlayerBloc, PlayerState>(
+        builder: (context, state) {
+          return ColoredBox(
+            color: widget.background,
             child: Builder(
               builder: (context) {
-                return switch (
-                    (widget.aspectRation != null) || widget.keepAspectRatio) {
-                  true => Builder(
-                      builder: (context) {
-                        return CenterAspectRatio(
-                          aspectRatio: _calculateAspectRatio(state),
-                          child: Builder(
-                            builder: (context) {
-                              switch (state) {
-                                case PlayerInitialized():
-                                  return VideoPlayer(state.controller);
-                                case PlayerLoading():
-                                case PlayerUninitialized():
-                                  return const SizedBox.expand();
-                              }
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  false => ColoredBox(
-                      color: Colors.black,
-                      child: Builder(
-                        builder: (context) {
-                          switch (state) {
-                            case PlayerInitialized():
-                              return VideoPlayer(state.controller);
-                            case PlayerLoading():
-                            case PlayerUninitialized():
-                              return const SizedBox.expand();
-                          }
+                if (state == const PlayerLoading() ||
+                    state == const PlayerUninitialized()) {
+                  return Center(
+                    child: widget.videoLoadingStyle?.loading ?? const Loader(),
+                  );
+                }
+
+                switch (state) {
+                  case PlayerInitialized():
+                    return ClipRect(
+                      clipBehavior: Clip.antiAlias,
+                      child: SizedBox.expand(
+                        child: switch ((widget.aspectRation != null) ||
+                            widget.keepAspectRatio) {
+                          true => Center(
+                              child: AspectRatio(
+                                aspectRatio: _calculateAspectRatio(state)!,
+                                child: VideoPlayer(state.controller),
+                              ),
+                            ),
+                          false => VideoPlayer(state.controller)
                         },
                       ),
-                    )
-                };
+                    );
+                  case PlayerFvpInitialized():
+                    return ClipRect(
+                      child: SizedBox.expand(
+                        child: switch ((widget.aspectRation != null) ||
+                            widget.keepAspectRatio) {
+                          true => Center(
+                              child: AspectRatio(
+                                aspectRatio: _calculateAspectRatio(state)!,
+                                child: FvpTexturePlayer(
+                                  textureId: state.player.textureId,
+                                ),
+                              ),
+                            ),
+                          false => FvpTexturePlayer(
+                              textureId: state.player.textureId,
+                            )
+                        },
+                      ),
+                    );
+                  case PlayerLoading():
+                  case PlayerUninitialized():
+                    throw Exception('Unsuported player');
+                }
               },
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  double _calculateAspectRatio(PlayerState state) {
+  double? _calculateAspectRatio(PlayerState state) {
     return switch (state) {
       PlayerInitialized() => _calculateNativeAspectRatio(state),
-      PlayerLoading() => defaultPlayerAspectRatio,
-      PlayerUninitialized() => defaultPlayerAspectRatio,
+      PlayerFvpInitialized() => _calculateFvpAspectRatio(state),
+      PlayerLoading() => null,
+      PlayerUninitialized() => null,
     };
   }
 
@@ -146,6 +168,13 @@ class _PlayerViewState extends State<PlayerView> {
     final ratio = state.controller.value.aspectRatio;
     final computedRatio = widget.aspectRation ??
         (ratio == 1.0 ? defaultPlayerAspectRatio : ratio);
+    return computedRatio > 0.0 ? computedRatio : 1.0;
+  }
+
+  double _calculateFvpAspectRatio(PlayerFvpInitialized state) {
+    const videoAspectRatio = 1.0;
+    final computedRatio = widget.aspectRation ??
+        (videoAspectRatio == 1.0 ? defaultPlayerAspectRatio : videoAspectRatio);
     return computedRatio > 0.0 ? computedRatio : 1.0;
   }
 }

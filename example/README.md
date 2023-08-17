@@ -2,7 +2,11 @@
 
 A Flutter application example for petit_player.
 
-![Alt text](/example/assets/snapshot.png?raw=true "snapshot")
+Running on linux: 
+![Alt text](/example/assets/snapshot_linux.png?raw=true "snapshot")
+
+Running on Chrome:
+![Alt text](/example/assets/snapshot_web.png?raw=true "snapshot")
 
 ## Usage
 

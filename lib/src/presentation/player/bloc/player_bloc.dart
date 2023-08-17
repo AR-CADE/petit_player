@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
+//import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:fvp/mdk.dart'
+    if (dart.library.html) 'package:petit_player/src/core/utils/fvp_dummy.dart'
+    as mdk;
 import 'package:petit_player/src/core/utils/utils.dart';
 import 'package:video_player/video_player.dart';
 
@@ -17,34 +21,55 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     _tryNotifyController(const PlayerUninitialized());
 
     on<PlayerCreate>(
-      (event, emit) async {
-        await dispose();
+      (event, emit) {
+        _dispose();
 
         _streamController = event.streamController;
 
         emit(const PlayerLoading());
         _tryNotifyController(const PlayerLoading());
 
-        await _getNativeInitializedController(event, emit);
+        switch (event.engine) {
+          case PlayerEngine.fvp:
+            {
+              if (!kIsWeb) {
+                _getFvpInitializedController(event, emit);
+              }
+              break;
+            }
+          case PlayerEngine.native:
+            {
+              _getNativeInitializedController(event, emit);
+              break;
+            }
+        }
       },
-      transformer: restartable(),
+      //transformer: restartable(),
     );
 
     on<_PlayerInitialized>(
       (event, emit) {
         final state = PlayerInitialized(event.controller);
-        _tryNotifyController(state);
         emit(state);
+        _tryNotifyController(state);
       },
     );
 
-    on<PlayerDispose>(_onPlayerDispose);
+    on<_PlayerFvpInitialized>(
+      (event, emit) {
+        final state = PlayerFvpInitialized(event.player);
+        emit(state);
+        _tryNotifyController(state);
+      },
+    );
+
+    on<_PlayerDispose>(_onPlayerDispose);
   }
 
-  Future<void> _getNativeInitializedController(
+  void _getNativeInitializedController(
     PlayerCreate event,
     Emitter<PlayerState> emit,
-  ) async {
+  ) {
     final urlIsNetwork = isNetwork(event.uri);
 
     _nativeController = getController(
@@ -53,16 +78,45 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       httpHeaders: event.httpHeaders,
     );
 
-    await Future.wait<void>([
+    Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
       _nativeController!.initialize()
-    ]).then((_) async {
+    ]).then((_) {
       if (_nativeController!.value.isInitialized) {
         if (event.autoPlay) {
-          await _nativeController!.play();
+          _nativeController!.play();
         }
         add(_PlayerInitialized(_nativeController!));
       }
+    });
+  }
+
+  void _getFvpInitializedController(
+    PlayerCreate event,
+    Emitter<PlayerState> emit,
+  ) {
+    _player = mdk.Player();
+
+    _player!.media = event.uri.toString();
+    _player!.loop = 0;
+    final videoDecoders = event.fvpOptions?['video.decoders'] as List<String>?;
+
+    if (videoDecoders != null) {
+      _player!.videoDecoders = videoDecoders;
+    }
+
+    if (event.autoPlay) {
+      _player!.state = mdk.PlaybackState.playing;
+    }
+    _player!
+        .updateTexture()
+        .then((value) => add(_PlayerFvpInitialized(_player!)));
+
+    Future.wait<void>([
+      Future.delayed(event.minLoadingDuration),
+      _player!.updateTexture()
+    ]).then((_) {
+      add(_PlayerFvpInitialized(_player!));
     });
   }
 
@@ -78,24 +132,31 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
   StreamController<PlayerState>? _streamController;
 
-  Future<void> dispose() async {
+  mdk.Player? _player;
+
+  void _dispose() {
     _tryNotifyController(const PlayerUninitialized());
-    await _nativeController?.pause();
-    await _nativeController?.dispose();
+    _nativeController?.pause();
+    _nativeController?.dispose();
+    if (!kIsWeb) {
+      _player?.state = mdk.PlaybackState.paused;
+      _player?.dispose();
+      _player = null;
+    }
     _nativeController = null;
     _streamController = null;
   }
 
-  Future<void> _onPlayerDispose(
-    PlayerDispose event,
+  void _onPlayerDispose(
+    _PlayerDispose event,
     Emitter<PlayerState> emit,
   ) {
-    return dispose();
+    return _dispose();
   }
 
   @override
   Future<void> close() {
-    dispose();
+    _dispose();
     return super.close();
   }
 }

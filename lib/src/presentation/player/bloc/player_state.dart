@@ -34,3 +34,17 @@ final class PlayerInitialized extends PlayerState {
   @override
   List<Object> get props => [controller];
 }
+
+/// {@template player_fvp_initialized}
+/// The state of the [PlayerBloc] after
+/// the [mdk.Player] has been inititialized.
+/// {@endtemplate}
+final class PlayerFvpInitialized extends PlayerState {
+  const PlayerFvpInitialized(this.player);
+
+  /// The current player.
+  final mdk.Player player;
+
+  @override
+  List<Object> get props => [player];
+}

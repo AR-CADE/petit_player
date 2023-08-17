@@ -22,6 +22,8 @@ final class PlayerCreate extends PlayerEvent {
     this.minLoadingDuration = Duration.zero,
     this.autoPlay = true,
     this.streamController,
+    this.engine = PlayerEngine.native,
+    this.fvpOptions,
   });
 
   final Uri uri;
@@ -29,6 +31,8 @@ final class PlayerCreate extends PlayerEvent {
   final Duration minLoadingDuration;
   final bool autoPlay;
   final StreamController<PlayerState>? streamController;
+  final PlayerEngine engine;
+  final Map<String, dynamic>? fvpOptions;
 }
 
 final class _PlayerInitialized extends PlayerEvent {
@@ -41,7 +45,16 @@ final class _PlayerInitialized extends PlayerEvent {
   List<Object> get props => [controller];
 }
 
-final class PlayerDispose extends PlayerEvent {
+final class _PlayerFvpInitialized extends PlayerEvent {
+  const _PlayerFvpInitialized(this.player);
+
+  /// The current player.
+  final mdk.Player player;
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [player];
+}
+
+final class _PlayerDispose extends PlayerEvent {
+  const _PlayerDispose();
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petit_player/src/core/style/video_loading_style.dart';
+import 'package:petit_player/src/core/utils/utils.dart';
 import 'package:petit_player/src/presentation/player/player.dart';
 
 class PetitPlayer extends StatelessWidget {
@@ -15,6 +16,9 @@ class PetitPlayer extends StatelessWidget {
     this.aspectRation,
     this.keepAspectRatio = true,
     this.httpHeaders = const <String, String>{},
+    this.background = Colors.transparent,
+    this.engine = PlayerEngine.native,
+    this.fvpOptions,
   });
 
   /// Video source
@@ -39,6 +43,16 @@ class PetitPlayer extends StatelessWidget {
   /// NOTE : if `aspectRation` is set, `keepAspectRatio` will be set to true
   final bool keepAspectRatio;
 
+  /// Background Color,
+  final Color background;
+
+  /// Player engine (curently supported : 'native (default)', 'fvp')
+  /// NOTE: FVP renderer works on Android, iOS, Linux, macOS and Windows but not Web (see more at: https://pub.dev/packages/fvp)
+  final PlayerEngine engine;
+
+  /// The Options to pass to FVP
+  final Map<String, dynamic>? fvpOptions;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -51,6 +65,9 @@ class PetitPlayer extends StatelessWidget {
         aspectRation: aspectRation,
         keepAspectRatio: keepAspectRatio,
         httpHeaders: httpHeaders,
+        background: background,
+        engine: engine,
+        fvpOptions: fvpOptions,
       ),
     );
   }

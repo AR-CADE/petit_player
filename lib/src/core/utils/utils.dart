@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:video_player/video_player.dart';
 
+enum PlayerEngine { native, fvp }
+
 const defaultPlayerAspectRatio = 16 / 9;
 
 double calculateVideoAspectRatio(int? width, int? height) {
