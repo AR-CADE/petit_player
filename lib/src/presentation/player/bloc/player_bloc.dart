@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fvp/mdk.dart'
-    if (dart.library.html) 'package:petit_player/src/core/utils/fvp_dummy.dart'
-    as mdk;
+import 'package:petit_player/fvp_pollyfill.dart' as mdk;
 import 'package:petit_player/src/core/utils/utils.dart';
 import 'package:video_player/video_player.dart';
 
