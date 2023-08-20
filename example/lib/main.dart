@@ -113,7 +113,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: PetitPlayer(
                 streamController: playerStateStreamController,
                 engine: kIsWeb ? PlayerEngine.native : PlayerEngine.fvp,
-                uri: uri16,
+                uri: uri0,
                 autoPlay: !kIsWeb,
                 fvpOptions: opts,
               ),
