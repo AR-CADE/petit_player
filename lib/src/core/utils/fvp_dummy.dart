@@ -1,7 +1,7 @@
 /// a Simple and naive mdk dummy class,
 /// that help to compile with flutter web
 ///
-/// TODO: Remove this file if fvp fully pollyfill all public symbols
+// TODO(me): Remove this file if fvp fully pollyfill all public symbols.
 class MdkVideoPlayer {
   static dynamic registerVideoPlayerPlatformsWith({dynamic options}) {}
 }
