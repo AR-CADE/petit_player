@@ -1,21 +1,9 @@
 /// a Simple and naive mdk dummy class,
 /// that help to compile with flutter web
+///
+/// TODO: Remove this file if fvp fully pollyfill all public symbols
 class MdkVideoPlayer {
-  static dynamic registerWith({dynamic options}) {}
   static dynamic registerVideoPlayerPlatformsWith({dynamic options}) {}
-  dynamic init() {}
-  dynamic dispose(dynamic textureId) {}
-  dynamic create(dynamic dataSource) {}
-  dynamic play(dynamic textureId) {}
-  dynamic pause(dynamic textureId) {}
-  dynamic setVolume(dynamic textureId, double volume) {}
-  dynamic setPlaybackSpeed(dynamic textureId, double speed) {}
-  dynamic seekTo(dynamic textureId, dynamic position) {}
-  dynamic getPosition(dynamic textureId) {}
-  dynamic videoEventsFor(dynamic textureId) {}
-  dynamic buildView(dynamic textureId) {}
-  dynamic setMixWithOthers(dynamic mixWithOthers) {}
-  dynamic setLooping(dynamic textureId, dynamic looping) {}
 }
 
 // ignore: non_constant_identifier_names
