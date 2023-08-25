@@ -13,7 +13,7 @@ class FvpTexturePlayer extends StatelessWidget {
     return ValueListenableBuilder<int?>(
       valueListenable: textureId,
       builder: (context, id, _) {
-        if (id == null || id == -1) {
+        if (id == null || id < 0) {
           return const SizedBox.expand();
         }
         return Texture(textureId: id);
