@@ -76,15 +76,8 @@ class PetitPlayer extends StatelessWidget {
         color: background,
         child: BlocBuilder<PlayerBloc, PlayerState>(
           builder: (context, state) {
-            if (state == const PlayerLoading() ||
-                state == const PlayerUninitialized()) {
-              return Center(
-                child: videoLoadingStyle?.loading ?? const Loader(),
-              );
-            }
-            switch (state) {
-              case PlayerInitialized():
-                return ClipRect(
+            return switch (state) {
+              PlayerInitialized() => ClipRect(
                   clipBehavior: Clip.antiAlias,
                   child: SizedBox.expand(
                     child: switch ((aspectRation != null) || keepAspectRatio) {
@@ -97,9 +90,8 @@ class PetitPlayer extends StatelessWidget {
                       false => VideoPlayer(state.controller)
                     },
                   ),
-                );
-              case PlayerFvpInitialized():
-                return ClipRect(
+                ),
+              PlayerFvpInitialized() => ClipRect(
                   child: SizedBox.expand(
                     child: switch ((aspectRation != null) || keepAspectRatio) {
                       true => Center(
@@ -115,11 +107,11 @@ class PetitPlayer extends StatelessWidget {
                         )
                     },
                   ),
-                );
-              case PlayerLoading():
-              case PlayerUninitialized():
-                throw Exception('Unsuported player');
-            }
+                ),
+              PlayerLoading() || PlayerUninitialized() => Center(
+                  child: videoLoadingStyle?.loading ?? const Loader(),
+                ),
+            };
           },
         ),
       ),
