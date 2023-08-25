@@ -124,10 +124,10 @@ packages:
     dependency: transitive
     description:
       name: fvp
-      sha256: "38847f14988faed2a48d8fe5abd759d0cb1d30eb88bfb144f59c8f078d342030"
+      sha256: "27c4ab8e63817b73e3e01555077a3714f02d85f35c4cf31ae42c9ee581ee84a0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.1"
+    version: "0.3.0"
   html:
     dependency: transitive
     description:
@@ -366,4 +366,4 @@ packages:
     version: "0.1.4-beta"
 sdks:
   dart: ">=3.1.0 <4.0.0"
-  flutter: ">=3.13.0"
+  flutter: ">=3.13.1"
