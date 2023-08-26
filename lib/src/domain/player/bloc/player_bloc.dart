@@ -92,8 +92,10 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     Emitter<PlayerState> emit,
   ) {
     _player = mdk.Player();
+    final urlIsNetwork = isNetwork(event.uri);
+    final media = urlIsNetwork ? event.uri.toString() : event.uri.toFilePath();
 
-    _player!.media = event.uri.toString();
+    _player!.media = media;
     _player!.loop = 0;
     final videoDecoders = event.fvpOptions?['video.decoders'] as List<String>?;
 
