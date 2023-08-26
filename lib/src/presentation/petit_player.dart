@@ -92,6 +92,7 @@ class PetitPlayer extends StatelessWidget {
                   ),
                 ),
               PlayerFvpInitialized() => ClipRect(
+                  clipBehavior: Clip.antiAlias,
                   child: SizedBox.expand(
                     child: switch ((aspectRation != null) || keepAspectRatio) {
                       true => Center(
