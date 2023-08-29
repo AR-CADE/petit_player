@@ -15,12 +15,8 @@ part 'player_state.dart';
 /// {@endtemplate}
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   PlayerBloc() : super(const PlayerUninitialized()) {
-    _tryNotifyController(const PlayerUninitialized());
-
     on<PlayerCreate>(
       (event, emit) {
-        _dispose();
-
         _streamController = event.streamController;
 
         emit(const PlayerLoading());
