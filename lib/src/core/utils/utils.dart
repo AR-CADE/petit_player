@@ -70,6 +70,17 @@ Future<void> rewind(
 }
 
 bool isNetwork(Uri uri) {
+  if (uri.hasScheme) {
+    switch (uri.scheme) {
+      case 'file':
+        return false;
+
+      case 'http':
+      case 'https':
+        return true;
+      default:
+    }
+  }
   final netRegex = RegExp(r'^(http|https):\/\/([\w.]+\/?)\S*');
   return netRegex.hasMatch(uri.toString());
 }
