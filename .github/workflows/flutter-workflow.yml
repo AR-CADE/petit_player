@@ -58,3 +58,18 @@ jobs:
         with:
           name: example-web
           path: example/build/web/
+  
+  build_cinema_example:
+    name: Build Cinema Example linux artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: cd example_cinema && flutter pub get
+      - run: cd example_cinema && flutter build linux --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: example-cinema-linux
+          path: example/build/linux/release/bundle/
