@@ -124,10 +124,10 @@ packages:
     dependency: transitive
     description:
       name: fvp
-      sha256: a4c652f9c22926c2707a2077bc4993eb96854250950e8682ce82b6be82b1612d
+      sha256: "793daea5056ca5bbdbbe56d9ba22e3bfc70fe38fc0211e152bc600aa6e51e0c0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.0"
+    version: "0.7.0"
   html:
     dependency: transitive
     description:
