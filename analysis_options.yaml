@@ -5,6 +5,8 @@ include: package:flutter_lints/flutter.yaml
 
 # Options found at https://raw.githubusercontent.com/felangel/bloc/master/analysis_options.yaml
 analyzer:
+  exclude:
+    - example_cinema/**
 
   language:
     strict-casts: true
