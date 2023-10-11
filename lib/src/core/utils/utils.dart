@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:petit_player/fvp_pollyfill.dart';
 import 'package:video_player/video_player.dart';
 
 enum PlayerEngine { native, fvp }
@@ -66,6 +67,26 @@ Future<void> rewind(
     );
   } else {
     await controller.seekTo(Duration.zero);
+  }
+}
+
+Future<void> fvpFastForward(
+  Player player, {
+  int seekTo = 10,
+}) async {
+  if (player.mediaInfo.duration - player.position > seekTo * 1000) {
+    await player.seek(position: player.position + (seekTo * 1000));
+  }
+}
+
+Future<void> fvpRewind(
+  Player player, {
+  int seekTo = 10,
+}) async {
+  if (player.position > seekTo * 1000) {
+    await player.seek(position: player.position - (seekTo * 1000));
+  } else {
+    await player.seek(position: 0);
   }
 }
 

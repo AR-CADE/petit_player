@@ -53,4 +53,7 @@ class Player {
   dynamic media;
   dynamic loop;
   dynamic videoDecoders;
+  dynamic volume;
+  dynamic position;
+  dynamic mediaInfo;
 }
