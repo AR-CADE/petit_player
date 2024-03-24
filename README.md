@@ -47,3 +47,6 @@ import 'package:petit_player/petit_player.dart';
 ```
 
 then just run it and enjoy !!!
+
+# contact
+arm-cade@proton.me
