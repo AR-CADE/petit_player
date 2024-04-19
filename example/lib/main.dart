@@ -39,9 +39,6 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final uri0 = Uri.parse(
-      'https://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/6304f20c941c5d00089634e7/master.m3u8?advertisingId&appName=web&terminate=false&appVersion=1&architecture&buildVersion&clientTime&deviceDNT=false&deviceId=d2ac77c8-fa01-4393-b7db-7560473c8809&deviceLat=0&deviceLon=0&deviceMake=flutter&deviceModel=web&deviceType=web&deviceVersion=flutter_current_version&includeExtendedEvents=false&marketingRegion=EARTH&country=EARTH&serverSideAds=false&sid=987b6e06-c93b-412c-a8f3-12bcf7dee920&clientID=d2ac77c8-fa01-4393-b7db-7560473c8809&clientModelNumber=1.0.0&clientDeviceType=0&sessionID&userId',
-    );
-    final uri8 = Uri.parse(
       'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
     );
     final uri9 = Uri.parse(
@@ -99,7 +96,8 @@ class MyHomePageState extends State<MyHomePage> {
     );
 
     final opts = <String, dynamic>{};
-    opts['video.decoders'] = ['FFmpeg'];
+    opts['video.decoders'] = ['VAAPI', 'VDPAU', 'hap', 'FFmpeg', 'dav1d'];
+    opts['lowLatency'] = 1;
     final playerStateStreamController = StreamController<PlayerState>();
     return Scaffold(
       appBar: AppBar(
@@ -113,7 +111,7 @@ class MyHomePageState extends State<MyHomePage> {
               child: PetitPlayer(
                 streamController: playerStateStreamController,
                 engine: kIsWeb ? PlayerEngine.native : PlayerEngine.fvp,
-                uri: uri0,
+                uri: uri16,
                 autoPlay: !kIsWeb,
                 fvpOptions: opts,
               ),
