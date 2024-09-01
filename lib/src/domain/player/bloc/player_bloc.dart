@@ -99,13 +99,19 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       _player!.videoDecoders = videoDecoders;
     }
 
+    final lowLatency = event.fvpOptions?['lowLatency'] as int?;
+    final keepOpen = event.fvpOptions?['keep_open'] as int?;
+    final shouldKeepOpen = lowLatency ?? keepOpen ?? 0;
+
+    _player!.setProperty('keep_open', shouldKeepOpen.toString());
+
     if (event.autoPlay) {
       _player!.state = mdk.PlaybackState.playing;
     }
 
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
-      _player!.updateTexture(),
+      _player!.prepare().then((_) => _player!.updateTexture()),
     ]).then((_) {
       add(_PlayerFvpInitialized(_player!));
     });
@@ -130,7 +136,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     _nativeController?.pause();
     _nativeController?.dispose();
     if (!kIsWeb) {
-      _player?.state = mdk.PlaybackState.paused;
+      _player?.state = mdk.PlaybackState.stopped;
       _player?.dispose();
       _player = null;
     }
