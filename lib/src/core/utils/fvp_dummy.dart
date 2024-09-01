@@ -45,6 +45,8 @@ class Player {
   dynamic setBackground(dynamic c, {dynamic vid}) {}
   dynamic setVideoEffect(dynamic effect, dynamic value, {dynamic vid}) {}
   dynamic setColorSpace(dynamic value, {dynamic vid}) {}
+  dynamic setProperty(dynamic key, dynamic value) {}
+  dynamic prepare() {}
   dynamic onEvent(dynamic callback) {}
   dynamic onStateChanged(dynamic callback, {dynamic reply}) {}
   dynamic onMediaStatusChanged(dynamic callback, {dynamic reply}) {}
