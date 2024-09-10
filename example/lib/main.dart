@@ -101,9 +101,9 @@ class MyHomePageState extends State<MyHomePage> {
       if (Platform.isLinux) {
         opts['video.decoders'] = [
           'hap',
-          'VAAPI:display=drm:interop=drm2:composed=1:external=1:threads=6',
-          'FFmpeg:hwcontext=vulkan:drop=0:external=1:reuse=1:threads=6',
-          'VDPAU:threads=6',
+          'VAAPI:display=drm:interop=drm2:composed=1',
+          'FFmpeg:reuse=1',
+          'VDPAU',
           'dav1d',
         ];
       }
