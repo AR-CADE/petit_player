@@ -105,14 +105,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     _player!.setProperty('keep_open', shouldKeepOpen.toString());
 
-    if (event.autoPlay) {
-      _player!.state = mdk.PlaybackState.playing;
-    }
-
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
-      _player!.updateTexture(),
-    ]).then((_) {
+      _player!.prepare(),
+    ]).then((_) async {
+      if (event.autoPlay) {
+        _player!.state = mdk.PlaybackState.playing;
+      }
+      await _player!.updateTexture();
       add(_PlayerFvpInitialized(_player!));
     });
   }
