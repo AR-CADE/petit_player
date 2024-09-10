@@ -111,7 +111,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     Future.wait<void>([
       Future.delayed(event.minLoadingDuration),
-      _player!.prepare().then((_) => _player!.updateTexture()),
+      _player!.updateTexture(),
     ]).then((_) {
       add(_PlayerFvpInitialized(_player!));
     });
