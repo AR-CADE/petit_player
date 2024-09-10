@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,18 @@ class MyHomePageState extends State<MyHomePage> {
     );
 
     final opts = <String, dynamic>{};
-    opts['video.decoders'] = ['VAAPI', 'VDPAU', 'hap', 'FFmpeg', 'dav1d'];
+    if (!kIsWeb) {
+      if (Platform.isLinux) {
+        opts['video.decoders'] = [
+          'hap',
+          'VAAPI:display=drm:interop=drm2:composed=1:external=1:threads=6',
+          'FFmpeg:hwcontext=vulkan:drop=0:external=1:reuse=1:threads=6',
+          'VDPAU:threads=6',
+          'dav1d',
+        ];
+      }
+    }
+
     opts['lowLatency'] = 1;
     final playerStateStreamController = StreamController<PlayerState>();
     return Scaffold(
@@ -106,32 +118,36 @@ class MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            SizedBox(
-              height: 720,
-              child: PetitPlayer(
-                streamController: playerStateStreamController,
-                engine: kIsWeb ? PlayerEngine.native : PlayerEngine.fvp,
-                uri: uri16,
-                autoPlay: !kIsWeb,
-                fvpOptions: opts,
+            Flexible(
+              child: SizedBox(
+                //height: 720,
+                child: PetitPlayer(
+                  streamController: playerStateStreamController,
+                  engine: kIsWeb ? PlayerEngine.native : PlayerEngine.fvp,
+                  uri: uri16,
+                  autoPlay: !kIsWeb,
+                  fvpOptions: opts,
+                ),
               ),
             ),
-            const Visibility(
-              visible: kIsWeb,
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Text(
-                      'To show the video contoller:',
-                      style: TextStyle(color: Colors.red, fontSize: 32),
-                    ),
-                    Text(
-                      // ignore: lines_longer_than_80_chars
-                      "Right-click on the video to show the contex menu, and select 'Show Controls'",
-                      style: TextStyle(color: Colors.red, fontSize: 32),
-                    ),
-                  ],
+            const Flexible(
+              child: Visibility(
+                visible: kIsWeb,
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Text(
+                        'To show the video contoller:',
+                        style: TextStyle(color: Colors.red, fontSize: 32),
+                      ),
+                      Text(
+                        // ignore: lines_longer_than_80_chars
+                        "Right-click on the video to show the contex menu, and select 'Show Controls'",
+                        style: TextStyle(color: Colors.red, fontSize: 32),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
