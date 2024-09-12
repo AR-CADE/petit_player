@@ -1,6 +1,6 @@
 name: petit_player
 description: A tiny wrapper around for video_player.
-version: 1.5.1
+version: 1.5.2
 homepage: https://github.com/AR-CADE/petit_player
 publish_to: none
 
