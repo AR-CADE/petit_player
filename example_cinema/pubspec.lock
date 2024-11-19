@@ -157,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: fvp
-      sha256: "6ecd1968d67c30f25a14e2112f5caa34fe5ff581c20b6f1edc17a19b28587eb7"
+      sha256: "3dd245cac5dfba36311cbf5834d8f275ba1f3e49a5cdcb4a98e01cb41e9a21d8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.26.0"
+    version: "0.28.0"
   html:
     dependency: transitive
     description:
@@ -271,7 +271,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.4.9"
+    version: "1.5.2"
   petitparser:
     dependency: transitive
     description:
@@ -369,10 +369,10 @@ packages:
     dependency: transitive
     description:
       name: video_player
-      sha256: e30df0d226c4ef82e2c150ebf6834b3522cf3f654d8e2f9419d376cdc071425d
+      sha256: "4a8c3492d734f7c39c2588a3206707a05ee80cef52e8c7f3b2078d430c84bc17"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.1"
+    version: "2.9.2"
   video_player_android:
     dependency: transitive
     description:
@@ -401,10 +401,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_web
-      sha256: "6dcdd298136523eaf7dfc31abaf0dfba9aa8a8dbc96670e87e9d42b6f2caf774"
+      sha256: "881b375a934d8ebf868c7fb1423b2bfaa393a0a265fa3f733079a86536064a10"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   video_player_web_hls:
     dependency: transitive
     description:
@@ -454,5 +454,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.5.1 <4.0.0"
-  flutter: ">=3.24.1"
+  dart: ">=3.5.4 <4.0.0"
+  flutter: ">=3.24.5"
