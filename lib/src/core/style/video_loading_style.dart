@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:petit_player/src/core/style/loader.dart';
 
 /// Video Loading Style
+@immutable
 class VideoLoadingStyle {
-  VideoLoadingStyle({
+  const VideoLoadingStyle({
     this.loading = const Loader(),
     this.minDuration = Duration.zero,
   });
