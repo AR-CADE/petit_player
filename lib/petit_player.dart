@@ -1,5 +1,5 @@
 /// petit_player library
-library petit_player;
+library;
 
 export 'src/core/style/video_loading_style.dart';
 export 'src/core/utils/utils.dart';

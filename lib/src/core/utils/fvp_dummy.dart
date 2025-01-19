@@ -6,9 +6,9 @@ class MdkVideoPlayer {
   static dynamic registerVideoPlayerPlatformsWith({dynamic options}) {}
 }
 
-// ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names MDK `PlaybackState` spoofing
 dynamic PlaybackState;
-// ignore: non_constant_identifier_names
+// ignore: non_constant_identifier_names MDK `State` spoofing
 dynamic State;
 
 class Player {
